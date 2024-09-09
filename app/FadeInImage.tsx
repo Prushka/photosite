@@ -27,7 +27,7 @@ const FadeInImage: React.FC<ImageProps> = ({ src, alt, className, width, height,
                 loading={loading}
                 className={`${className} ${
                     isLoaded ? 'opacity-100' : 'opacity-0'
-                } transition-opacity duration-700 delay-100 ease-in-out`}
+                } transition-opacity duration-700 delay-75 ease-in-out`}
                 onLoad={handleImageLoad}
             />
             {/*{!isLoaded && (*/}
