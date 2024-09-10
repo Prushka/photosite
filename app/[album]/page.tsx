@@ -49,13 +49,6 @@ function ImageSlider({photos, selected, open, setOpen}:
         });
     const [popOverOpen, setPopOverOpen] = useState<boolean>(false);
     const [controlHidden, setControlHidden] = useState<boolean>(false);
-    const [isTouch, setIsTouch] = useState<boolean>(isTouchDevice());
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsTouch(isTouchDevice());
-        }, 3000);
-        return () => clearTimeout(timer);
-    }, [setIsTouch]);
     useEffect(() => {
         setControlHidden(false);
         let timer = setTimeout(() => {
@@ -137,7 +130,7 @@ function ImageSlider({photos, selected, open, setOpen}:
             document.removeEventListener('touchstart', handleTouchStart);
             document.removeEventListener('touchend', handleTouchEnd);
         }
-    }, [updateSelected]);
+    }, [setOpen, updateSelected]);
     useEffect(() => {
         const keyListener = (e: KeyboardEvent) => {
             if (e.key === 'ArrowLeft') {
@@ -214,7 +207,7 @@ function ImageSlider({photos, selected, open, setOpen}:
 
             </div>
             <div
-                className={`flex justify-between w-full absolute z-20 transition-opacity duration-300 ${controlHidden ? 'opacity-0' : 'opacity-100'} ${isTouch ? 'hidden' : ''}`}>
+                className={`flex justify-between w-full absolute z-20 transition-opacity duration-300 ${controlHidden ? 'opacity-0' : 'opacity-100'} ${isTouchDevice() ? 'hidden' : ''}`}>
                 <button onClick={(e: any) => {
                     updateSelected(-1);
                     e.stopPropagation();
