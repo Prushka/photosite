@@ -7,7 +7,7 @@ import {Masonry} from "react-plock";
 import {Photo} from "@/app/photos/route";
 import {useRecoilState} from "recoil";
 import {albumsState} from "@/app/loader";
-import {ChevronLeft, ChevronRight, X} from "lucide-react";
+import {ChevronLeft, ChevronRight, Gem, X} from "lucide-react";
 
 function ImageSlider({photos, selected, open, setOpen}:
                          {
@@ -19,6 +19,25 @@ function ImageSlider({photos, selected, open, setOpen}:
         useState<{ current: number | undefined; previous: number | undefined }>({
             current: undefined, previous: undefined
         });
+    const [controlHidden, setControlHidden] = useState<boolean>(false);
+    useEffect(() => {
+        setControlHidden(false);
+        let timer = setTimeout(() => {
+            setControlHidden(true);
+        }, 1500);
+        const mouseMove = () => {
+            setControlHidden(false);
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                setControlHidden(true);
+            }, 1500);
+        }
+        document.addEventListener('mousemove', mouseMove);
+        return () => {
+            clearTimeout(timer)
+            document.removeEventListener('mousemove', mouseMove);
+        };
+    }, [slideGroup]);
     useEffect(() => {
         if (selected !== slideGroup.current) {
             setSlideGroup((prev) => {
@@ -41,47 +60,62 @@ function ImageSlider({photos, selected, open, setOpen}:
             return {current: prev.current !== undefined ? prev.current + direction : prev.current,
                 previous: prev.current}
         });
-    }, [setSlideGroup]);
+    }, [photos.length]);
     useEffect(() => {
         const keyListener = (e: KeyboardEvent) => {
             if (e.key === 'ArrowLeft') {
                 updateSelected(- 1);
             } else if (e.key === 'ArrowRight') {
                 updateSelected(1);
+            } else if (e.key === 'Escape') {
+                setOpen(false);
             }
         }
         window.addEventListener('keydown', keyListener);
         return () => {
             window.removeEventListener('keydown', keyListener);
         }
-    }, [photos.length, selected, updateSelected]);
+    }, [photos.length, selected, setOpen, updateSelected]);
     return open ? <div
-        className={"fixed top-0 left-0 w-full h-full bg-black bg-opacity-85 z-50 flex flex-col items-center " +
+        className={"fixed top-0 left-0 w-full h-full bg-black bg-opacity-90 backdrop-blur z-50 flex flex-col items-center cursor-zoom-out " +
             `${open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
         onClick={() => setOpen(false)}
     >
-        <div className={"flex flex-row-reverse items-center p-4 w-full "}>
-            <button className={"text-gray-50 p-2 hover:text-gray-300"}>
-                <X size={48} strokeWidth={1} onClick={() => setOpen(false)}/>
-            </button>
-        </div>
-        <div className={"flex justify-between items-center flex-1 overflow-auto w-full"}>
-            <button onClick={(e: any) => {
-                updateSelected(- 1);
-                e.stopPropagation();
-            }}
-                    className={"text-gray-50 p-2 hover:text-gray-300"}>
-                <ChevronLeft size={64} strokeWidth={1}/>
-            </button>
+        <div className={"flex justify-between items-center flex-1 overflow-auto w-full relative"}>
+
+            <div className={`flex flex-row-reverse items-center p-2 w-full absolute top-0 right-0 z-20 transition-opacity duration-300 ${controlHidden ? 'opacity-0' :'opacity-100'}`}>
+                <button className={"text-gray-50 p-2 hover:text-gray-300"}>
+                    <X size={48} strokeWidth={1} onClick={() => setOpen(false)}/>
+                </button>
+                <button className={"text-gray-50 p-2 hover:text-gray-300"}>
+                    <Gem size={36} strokeWidth={1} onClick={() => setOpen(false)}/>
+                </button>
+            </div>
+            <div className={`flex justify-between w-full absolute z-20 transition-opacity duration-300 ${controlHidden ? 'opacity-0' :'opacity-100'}`}>
+                <button onClick={(e: any) => {
+                    updateSelected(-1);
+                    e.stopPropagation();
+                }}
+                        className={"text-gray-50 p-2 hover:text-gray-300"}>
+                    <ChevronLeft size={64} strokeWidth={1}/>
+                </button>
+
+                <button onClick={(e: any) => {
+                    updateSelected(1);
+                    e.stopPropagation();
+                }}
+                        className={"text-gray-50 p-2 hover:text-gray-300"}>
+                    <ChevronRight size={64} strokeWidth={1}/>
+                </button>
+            </div>
 
             <div className={"relative h-full flex-1 overflow-auto w-full"}>
                 {slideGroup.current !== undefined && <>
                     <FadeInImage
                         key={photos[slideGroup.current].path}
                         fadeIn={false}
-                        className={"absolute object-contain h-full p-4 animate-fadeIn z-10"}
+                        className={"absolute object-contain h-full animate-fadeIn z-10"}
                         loading={"eager"}
-                        onClick={(e) => e.stopPropagation()}
                         src={`http://localhost:3005/raw/${photos[slideGroup.current].path}`}
                         alt={photos[slideGroup.current].path} width={photos[slideGroup.current].width}
                         height={photos[slideGroup.current].height}/>
@@ -89,9 +123,8 @@ function ImageSlider({photos, selected, open, setOpen}:
                         <FadeInImage
                             fadeIn={false}
                             key={photos[slideGroup.previous].path}
-                            className={"absolute object-contain h-full p-4 animate-fadeOut z-0 opacity-0"}
+                            className={"absolute object-contain h-full animate-fadeOut z-0 opacity-0"}
                             loading={"eager"}
-                            onClick={(e) => e.stopPropagation()}
                             src={`http://localhost:3005/raw/${photos[slideGroup.previous].path}`}
                             onAnimationEnd={() => setSlideGroup((prev) => {
                                 return {current: prev.current, previous: undefined}
@@ -102,13 +135,6 @@ function ImageSlider({photos, selected, open, setOpen}:
                 </>
                 }
             </div>
-            <button onClick={(e: any) => {
-                updateSelected(1);
-                e.stopPropagation();
-            }}
-                    className={"text-gray-50 p-2 hover:text-gray-300"}>
-                <ChevronRight size={64} strokeWidth={1}/>
-            </button>
         </div>
     </div> : <></>
 }
@@ -136,7 +162,7 @@ export default function Page({params}: { params: { album: string } }) {
                         config={{
                             columns: [1, 2, 3],
                             gap: [18, 18, 18],
-                            media: [900, 1300, 2500],
+                            media: [1000, 1400, 2500],
                         }}
                         render={(data, idx) => (
                             <div key={idx} className={"cursor-pointer relative image-container"}
