@@ -230,7 +230,7 @@ function ImageSlider({photos, selected, open, setOpen}:
                         fadeIn={false}
                         className={"absolute object-contain h-full animate-fadeIn z-10"}
                         loading={"eager"}
-                        src={`http://localhost:3005/raw/${photos[slideGroup.current].path}`}
+                        src={`${photos[slideGroup.current].path}`}
                         alt={photos[slideGroup.current].path} width={photos[slideGroup.current].width}
                         height={photos[slideGroup.current].height}/>
                     {slideGroup.previous !== undefined &&
@@ -239,7 +239,7 @@ function ImageSlider({photos, selected, open, setOpen}:
                             key={photos[slideGroup.previous].path}
                             className={"absolute object-contain h-full animate-fadeOut z-0 opacity-0"}
                             loading={"eager"}
-                            src={`http://localhost:3005/raw/${photos[slideGroup.previous].path}`}
+                            src={`${photos[slideGroup.previous].path}`}
                             onAnimationEnd={() => setSlideGroup((prev) => {
                                 return {current: prev.current, previous: undefined}
                             })}
@@ -288,8 +288,10 @@ export default function Page({params}: { params: { album: string } }) {
                                      }
                                  }}
                             >
-                                <FadeInImage loading={"lazy"}
-                                             src={`http://localhost:3005/raw/${data.path}`}
+                                <FadeInImage
+                                    previewOnly
+                                    loading={"lazy"}
+                                             src={`${data.path}`}
                                              alt={data.path} width={data.width} height={data.height}/>
                             </div>)}
                     /></>

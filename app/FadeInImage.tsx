@@ -12,13 +12,15 @@ interface ImageProps {
     onClick?: (e: React.MouseEvent<HTMLImageElement>) => void;
     onAnimationEnd?: (e: React.AnimationEvent<HTMLImageElement>) => void;
     onTransitionEnd?: (e: React.TransitionEvent<HTMLImageElement>) => void;
+    previewOnly?: boolean;
 }
 
 const FadeInImage: React.FC<ImageProps> = ({ src, alt, className, width, height, loading,
     fadeIn = true,
     onClick,
     onAnimationEnd,
-    onTransitionEnd
+    onTransitionEnd,
+    previewOnly
 }) => {
     const [isLoaded, setIsLoaded] = useState(false);
 
@@ -28,7 +30,7 @@ const FadeInImage: React.FC<ImageProps> = ({ src, alt, className, width, height,
 
     return (
             <Image
-                src={src}
+                src={`http://localhost:3005/${previewOnly ? 'preview' : 'raw'}/${src}`}
                 alt={alt}
                 onClick={onClick}
                 width={width}
