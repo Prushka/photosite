@@ -16,14 +16,14 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-        <body className={"flex flex-col"}>
+        <body className={"flex flex-col dark"}>
         <RecoilRootWrapper>
             <Loader/>
             {children}
         </RecoilRootWrapper>
 
         <footer className={"w-full p-8 flex mt-auto items-center justify-center"}>
-            <Link className={"text-sm text-neutral-200"} href={"https://lyu.sh"}>© 2024 Dan Lyu</Link>
+            <Link className={"text-sm text-neutral-200 underline"} href={"https://lyu.sh"}>© 2024 Dan Lyu</Link>
         </footer>
         </body>
         </html>

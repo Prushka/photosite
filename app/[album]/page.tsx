@@ -7,7 +7,23 @@ import {Masonry} from "react-plock";
 import {Photo} from "@/app/photos/route";
 import {useRecoilState} from "recoil";
 import {albumsState} from "@/app/loader";
-import {ChevronLeft, ChevronRight, Gem, X} from "lucide-react";
+import {Aperture, ChevronLeft, ChevronRight, Gem, X} from "lucide-react";
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
+
+function Row({icon, title, content}: { icon: any, title: string, content: string | undefined | number }) {
+    return (content && <div className={"flex gap-4 justify-between items-center text-sm"}>
+        <div className={"flex gap-2"}>
+            <div className={"shrink-0"}>{icon}</div>
+            <p className={"font-bold"}>{title}</p>
+        </div>
+        <p>{content}</p>
+    </div>)
+}
+
+function isTouchDevice() {
+    return (('ontouchstart' in window) ||
+        (navigator.maxTouchPoints > 0));
+}
 
 function ImageSlider({photos, selected, open, setOpen}:
                          {
@@ -19,17 +35,29 @@ function ImageSlider({photos, selected, open, setOpen}:
         useState<{ current: number | undefined; previous: number | undefined }>({
             current: undefined, previous: undefined
         });
+    const [popOverOpen, setPopOverOpen] = useState<boolean>(false);
     const [controlHidden, setControlHidden] = useState<boolean>(false);
+    const [isTouch, setIsTouch] = useState<boolean>(isTouchDevice());
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsTouch(isTouchDevice());
+        }, 3000);
+        return () => clearTimeout(timer);
+    }, [setIsTouch]);
     useEffect(() => {
         setControlHidden(false);
         let timer = setTimeout(() => {
-            setControlHidden(true);
+            if(!popOverOpen) {
+                setControlHidden(true);
+            }
         }, 1500);
         const mouseMove = () => {
             setControlHidden(false);
             clearTimeout(timer);
             timer = setTimeout(() => {
-                setControlHidden(true);
+                if(!popOverOpen) {
+                    setControlHidden(true);
+                }
             }, 1500);
         }
         document.addEventListener('mousemove', mouseMove);
@@ -37,7 +65,7 @@ function ImageSlider({photos, selected, open, setOpen}:
             clearTimeout(timer)
             document.removeEventListener('mousemove', mouseMove);
         };
-    }, [slideGroup]);
+    }, [slideGroup, popOverOpen]);
     useEffect(() => {
         if (selected !== slideGroup.current) {
             setSlideGroup((prev) => {
@@ -79,33 +107,77 @@ function ImageSlider({photos, selected, open, setOpen}:
     return open ? <div
         className={"fixed top-0 left-0 w-full h-full bg-black bg-opacity-90 backdrop-blur z-50 flex flex-col items-center cursor-zoom-out " +
             `${open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-        onClick={() => setOpen(false)}
+        onClick={() => {
+            if(popOverOpen){
+                setPopOverOpen(false);
+            } else if(controlHidden) {
+                setControlHidden(false);
+            }else {
+                setOpen(false)
+            }
+        }}
     >
         <div className={"flex justify-between items-center flex-1 overflow-auto w-full relative"}>
 
-            <div className={`flex flex-row-reverse items-center p-2 w-full absolute top-0 right-0 z-20 transition-opacity duration-300 ${controlHidden ? 'opacity-0' :'opacity-100'}`}>
+            <div className={`flex flex-row-reverse gap-3 max-md:gap-1 items-center p-2 w-full absolute top-0 right-0 z-20 transition-opacity duration-300 ${controlHidden ? 'opacity-0 pointer-events-none' :'opacity-100'}`}>
                 <button className={"text-gray-50 p-2 hover:text-gray-300"}>
-                    <X size={48} strokeWidth={1} onClick={() => setOpen(false)}/>
+                    <X
+                        className={"w-12 h-12 max-md:w-10 max-md:h-10"}
+                        strokeWidth={1} onClick={() => setOpen(false)}/>
                 </button>
-                <button className={"text-gray-50 p-2 hover:text-gray-300"}>
-                    <Gem size={36} strokeWidth={1} onClick={() => setOpen(false)}/>
-                </button>
+                <Popover
+                    open={popOverOpen}>
+                    <PopoverTrigger onClick={(e) => {
+                        e.stopPropagation()
+                        setPopOverOpen((prev) => !prev)
+                    }}>
+                        <Aperture className={"w-10 h-10 max-md:w-8 max-md:h-8"} strokeWidth={1}
+                        />
+                    </PopoverTrigger>
+                    <PopoverContent
+                        className={"mt-4 mr-4"}
+                        onClick={(e) => e.stopPropagation()}
+                        align={"center"}>
+                        {slideGroup.current !== undefined &&
+                            <div className={"flex flex-col gap-3"}>
+                                <Row icon={<Gem size={24} strokeWidth={1}/>} title={"Camera"}
+                                     content={photos[slideGroup.current].exif.Image?.Model}/>
+                                <Row icon={<Gem size={24} strokeWidth={1}/>} title={"Resolution"}
+                                     content={`${photos[slideGroup.current].width} x ${photos[slideGroup.current].height}`}/>
+                                <Row icon={<Gem size={24} strokeWidth={1}/>} title={"Exposure Time"}
+                                     content={`${photos[slideGroup.current].exif.Photo?.ExposureTime?.toFixed(4)}s`}/>
+                                <Row icon={<Gem size={24} strokeWidth={1}/>} title={"Aperture"}
+                                     content={`f/${photos[slideGroup.current].exif.Photo?.FNumber}`}/>
+                                <Row icon={<Gem size={24} strokeWidth={1}/>} title={"ISO"}
+                                     content={`${photos[slideGroup.current].exif.Photo?.ISOSpeedRatings}`}/>
+                                <Row icon={<Gem size={24} strokeWidth={1}/>} title={"Focal Length"}
+                                     content={`${photos[slideGroup.current].exif.Photo?.FocalLength}mm`}/>
+                                <Row icon={<Gem size={24} strokeWidth={1}/>} title={"Subject Distance"}
+                                     content={`${photos[slideGroup.current].exif.Photo?.SubjectDistance !== undefined 
+                                         ? photos[slideGroup.current].exif.Photo?.SubjectDistance! > 100000 ? 'MAX' : 
+                                             photos[slideGroup.current].exif.Photo?.SubjectDistance : ''}`}/>
+                            </div>}
+                    </PopoverContent>
+                </Popover>
+
             </div>
-            <div className={`flex justify-between w-full absolute z-20 transition-opacity duration-300 ${controlHidden ? 'opacity-0' :'opacity-100'}`}>
+            <div
+                className={`flex justify-between w-full absolute z-20 transition-opacity duration-300 ${controlHidden ? 'opacity-0' : 'opacity-100'} ${isTouch? 'hidden':''}`}>
                 <button onClick={(e: any) => {
                     updateSelected(-1);
                     e.stopPropagation();
                 }}
-                        className={"text-gray-50 p-2 hover:text-gray-300"}>
-                    <ChevronLeft size={64} strokeWidth={1}/>
+                        className={`text-gray-50 p-1.5 max-md:p-0.5 hover:text-gray-300 ${slideGroup.current === 0 ? 'opacity-0':''}`}>
+                    <ChevronLeft
+                        className={"w-16 h-16 max-md:w-12 max-md:h-12"} strokeWidth={1}/>
                 </button>
 
                 <button onClick={(e: any) => {
                     updateSelected(1);
                     e.stopPropagation();
                 }}
-                        className={"text-gray-50 p-2 hover:text-gray-300"}>
-                    <ChevronRight size={64} strokeWidth={1}/>
+                        className={`text-gray-50 p-1.5 max-md:p-0.5 hover:text-gray-300 ${slideGroup.current === photos.length - 1 ? 'opacity-0':''}`}>
+                    <ChevronRight className={"w-16 h-16 max-md:w-12 max-md:h-12"} strokeWidth={1}/>
                 </button>
             </div>
 
