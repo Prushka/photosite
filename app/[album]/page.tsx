@@ -260,14 +260,21 @@ export default function Page({params}: { params: { album: string } }) {
     const [photos] = useRecoilState(albumsState);
     const router = useRouter();
     useEffect(() => {
-        if (photos && Object.keys(photos).length > 0 && !photos[selectedAlbum]) {
-            router.push(`/${Object.keys(photos)[0]}`)
+        if(selectedAlbum !== 'about'){
+            if (photos && Object.keys(photos).length > 0 && !photos[selectedAlbum]) {
+                router.push(`/${Object.keys(photos)[0]}`)
+            }
         }
+
     }, [photos, selectedAlbum, router]);
     return (
 
         <div className={"px-4 w-full flex justify-center"}>
-            {photos[selectedAlbum]?.photos &&
+            {selectedAlbum === "about" ? <div className="flex flex-col items-center justify-center text-white">
+                <h1 className="text-3xl">About</h1>
+                <p className="mt-4">This is the about page</p>
+            </div> :
+            photos[selectedAlbum]?.photos &&
                 <>
                     <ImageSlider photos={photos[selectedAlbum]?.photos} selected={selectedPhoto}
                                  open={open} setOpen={setOpen}/>

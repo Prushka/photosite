@@ -22,8 +22,12 @@ export default function RootLayout({
             {children}
         </RecoilRootWrapper>
 
-        <footer className={"w-full p-8 flex mt-auto items-center justify-center"}>
-            <Link className={"text-sm text-neutral-200 underline"} href={"https://lyu.sh"}>© 2024 Dan Lyu</Link>
+        <footer className={"w-full p-8 flex mt-auto items-center justify-center [&>*]:text-neutral-300 text-sm gap-2"}>
+            <Link className={"underline"} href={"https://lyu.sh"} target={"_blank"}>© 2024 Dan Lyu</Link><span>|</span>
+            <Link className={"underline"} href={"https://github.com/Prushka/photosite"}
+            target={"_blank"}
+            >Photosite by Dan Lyu</Link>
+
         </footer>
         </body>
         </html>

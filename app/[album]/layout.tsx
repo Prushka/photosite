@@ -17,7 +17,7 @@ export default function Layout({ params, children }: { params: { album: string }
                     <Link href={"/"} className={"fascinate"}>DAN<br/> LYU</Link>
                 </p>
                 <div className={"flex gap-8 max-md:gap-6"}>
-                    {Object.keys(photos).map((album) => (
+                    {Object.keys(photos).concat(["about"]).map((album) => (
                         <Link key={album}
                               href={`/${album}`}
                               className={`font-extrabold flex flex-col gap-2 ${album === selectedAlbum ? 'underline-offset-2 underline' : ''}`}>
