@@ -6,7 +6,6 @@ services:
       - "3000:3000"
     environment:
       - TZ=America/Toronto
-      - NEXT_PUBLIC_IMG_HOST=http://localhost:3005
       - RAW=/raw
       - PREVIEW=/preview
     volumes:

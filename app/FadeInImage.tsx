@@ -30,7 +30,7 @@ const FadeInImage: React.FC<ImageProps> = ({ src, alt, className, width, height,
 
     return (
             <Image
-                src={`${process.env.NEXT_PUBLIC_IMG_HOST}/${previewOnly ? 'preview' : 'raw'}/${src}`}
+                src={`${window.location.origin}/static/${previewOnly ? 'preview' : 'raw'}/${src}`}
                 alt={alt}
                 onClick={onClick}
                 width={width}
