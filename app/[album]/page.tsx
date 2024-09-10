@@ -59,7 +59,7 @@ function ImageSlider({photos, selected, open, setOpen}:
     useEffect(() => {
         setControlHidden(false);
         let timer = setTimeout(() => {
-            if(!popOverOpen) {
+            if (!popOverOpen) {
                 setControlHidden(true);
             }
         }, 1500);
@@ -67,7 +67,7 @@ function ImageSlider({photos, selected, open, setOpen}:
             setControlHidden(false);
             clearTimeout(timer);
             timer = setTimeout(() => {
-                if(!popOverOpen) {
+                if (!popOverOpen) {
                     setControlHidden(true);
                 }
             }, 1500);
@@ -92,11 +92,13 @@ function ImageSlider({photos, selected, open, setOpen}:
     }, [open]);
     const updateSelected = useCallback((direction: number) => {
         setSlideGroup((prev) => {
-            if((prev.current == 0 && direction == -1) || (prev.current == photos.length - 1 && direction == 1)) {
+            if ((prev.current == 0 && direction == -1) || (prev.current == photos.length - 1 && direction == 1)) {
                 return prev;
             }
-            return {current: prev.current !== undefined ? prev.current + direction : prev.current,
-                previous: prev.current}
+            return {
+                current: prev.current !== undefined ? prev.current + direction : prev.current,
+                previous: prev.current
+            }
         });
     }, [photos.length]);
 
@@ -107,35 +109,39 @@ function ImageSlider({photos, selected, open, setOpen}:
             xDown = e.touches[0].clientX;
             yDown = e.touches[0].clientY;
         }
-        const handleTouchMove = (e: TouchEvent) => {
+        const handleTouchEnd = (e: TouchEvent) => {
             if (!xDown || !yDown) {
                 return;
             }
-            let xUp = e.touches[0].clientX;
-            let yUp = e.touches[0].clientY;
+            let xUp = e.changedTouches[0].clientX;
+            let yUp = e.changedTouches[0].clientY;
             let xDiff = xDown - xUp;
             let yDiff = yDown - yUp;
             if (Math.abs(xDiff) > Math.abs(yDiff)) {
-                if (xDiff > 0) {
-                    updateSelected(1);
-                } else {
-                    updateSelected(-1);
+                if (Math.abs(xDiff) > 45) {
+                    if (xDiff > 0) {
+                        updateSelected(1);
+                    } else {
+                        updateSelected(-1);
+                    }
                 }
+            } else if (yDiff < -45) {
+                setOpen(false)
             }
             xDown = null;
             yDown = null;
         }
         document.addEventListener('touchstart', handleTouchStart, false);
-        document.addEventListener('touchmove', handleTouchMove, false);
+        document.addEventListener('touchend', handleTouchEnd, false);
         return () => {
             document.removeEventListener('touchstart', handleTouchStart);
-            document.removeEventListener('touchmove', handleTouchMove);
+            document.removeEventListener('touchend', handleTouchEnd);
         }
     }, [updateSelected]);
     useEffect(() => {
         const keyListener = (e: KeyboardEvent) => {
             if (e.key === 'ArrowLeft') {
-                updateSelected(- 1);
+                updateSelected(-1);
             } else if (e.key === 'ArrowRight') {
                 updateSelected(1);
             } else if (e.key === 'Escape') {
@@ -151,18 +157,19 @@ function ImageSlider({photos, selected, open, setOpen}:
         className={"fixed top-0 left-0 w-full h-full bg-black bg-opacity-90 backdrop-blur z-50 flex flex-col items-center cursor-zoom-out " +
             `${open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
         onClick={() => {
-            if(popOverOpen){
+            if (popOverOpen) {
                 setPopOverOpen(false);
-            } else if(controlHidden) {
+            } else if (controlHidden) {
                 setControlHidden(false);
-            }else {
+            } else {
                 setOpen(false)
             }
         }}
     >
         <div className={"flex justify-between items-center flex-1 overflow-auto w-full relative"}>
 
-            <div className={`flex flex-row-reverse gap-3 max-md:gap-1 items-center p-2 w-full absolute top-0 right-0 z-20 transition-opacity duration-300 ${controlHidden ? 'opacity-0 pointer-events-none' :'opacity-100'}`}>
+            <div
+                className={`flex flex-row-reverse gap-3 max-md:gap-1 items-center p-2 w-full absolute top-0 right-0 z-20 transition-opacity duration-300 ${controlHidden ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
                 <button className={"text-gray-50 p-2 hover:text-gray-300"}>
                     <X
                         className={"w-12 h-12 max-md:w-10 max-md:h-10"}
@@ -174,7 +181,9 @@ function ImageSlider({photos, selected, open, setOpen}:
                         e.stopPropagation()
                         setPopOverOpen((prev) => !prev)
                     }}>
-                        <Aperture className={"w-9 h-9 max-md:w-8 max-md:h-8 transition-colors text-gray-50 hover:text-gray-300"} strokeWidth={1}
+                        <Aperture
+                            className={"w-9 h-9 max-md:w-8 max-md:h-8 transition-colors text-gray-50 hover:text-gray-300"}
+                            strokeWidth={1}
                         />
                     </PopoverTrigger>
                     <PopoverContent
@@ -196,8 +205,8 @@ function ImageSlider({photos, selected, open, setOpen}:
                                 <Row icon={<Telescope size={20} strokeWidth={1}/>} title={"Focal Length"}
                                      content={`${photos[slideGroup.current].exif.Photo?.FocalLength}mm`}/>
                                 <Row icon={<ScanSearch size={20} strokeWidth={1}/>} title={"Subject Distance"}
-                                     content={`${photos[slideGroup.current].exif.Photo?.SubjectDistance !== undefined 
-                                         ? photos[slideGroup.current].exif.Photo?.SubjectDistance! > 100000 ? 'MAX' : 
+                                     content={`${photos[slideGroup.current].exif.Photo?.SubjectDistance !== undefined
+                                         ? photos[slideGroup.current].exif.Photo?.SubjectDistance! > 100000 ? 'MAX' :
                                              photos[slideGroup.current].exif.Photo?.SubjectDistance : ''}`}/>
                             </div>}
                     </PopoverContent>
@@ -205,12 +214,12 @@ function ImageSlider({photos, selected, open, setOpen}:
 
             </div>
             <div
-                className={`flex justify-between w-full absolute z-20 transition-opacity duration-300 ${controlHidden ? 'opacity-0' : 'opacity-100'} ${isTouch? 'hidden':''}`}>
+                className={`flex justify-between w-full absolute z-20 transition-opacity duration-300 ${controlHidden ? 'opacity-0' : 'opacity-100'} ${isTouch ? 'hidden' : ''}`}>
                 <button onClick={(e: any) => {
                     updateSelected(-1);
                     e.stopPropagation();
                 }}
-                        className={`text-gray-50 p-1.5 max-md:p-0.5 hover:text-gray-300 ${slideGroup.current === 0 ? 'opacity-0':''}`}>
+                        className={`text-gray-50 p-1.5 max-md:p-0.5 hover:text-gray-300 ${slideGroup.current === 0 ? 'opacity-0' : ''}`}>
                     <ChevronLeft
                         className={"w-16 h-16 max-md:w-12 max-md:h-12"} strokeWidth={1}/>
                 </button>
@@ -219,7 +228,7 @@ function ImageSlider({photos, selected, open, setOpen}:
                     updateSelected(1);
                     e.stopPropagation();
                 }}
-                        className={`text-gray-50 p-1.5 max-md:p-0.5 hover:text-gray-300 ${slideGroup.current === photos.length - 1 ? 'opacity-0':''}`}>
+                        className={`text-gray-50 p-1.5 max-md:p-0.5 hover:text-gray-300 ${slideGroup.current === photos.length - 1 ? 'opacity-0' : ''}`}>
                     <ChevronRight className={"w-16 h-16 max-md:w-12 max-md:h-12"} strokeWidth={1}/>
                 </button>
             </div>
@@ -229,7 +238,7 @@ function ImageSlider({photos, selected, open, setOpen}:
                     <FadeInImage
                         key={photos[slideGroup.current].path}
                         fadeIn={false}
-                        className={"absolute object-contain h-full animate-fadeIn z-10"}
+                        className={"absolute object-contain h-full w-full animate-fadeIn z-10"}
                         loading={"eager"}
                         src={`${photos[slideGroup.current].path}`}
                         alt={photos[slideGroup.current].path} width={photos[slideGroup.current].width}
@@ -238,7 +247,7 @@ function ImageSlider({photos, selected, open, setOpen}:
                         <FadeInImage
                             fadeIn={false}
                             key={photos[slideGroup.previous].path}
-                            className={"absolute object-contain h-full animate-fadeOut z-0 opacity-0"}
+                            className={"absolute object-contain h-full w-full animate-fadeOut z-0 opacity-0"}
                             loading={"eager"}
                             src={`${photos[slideGroup.previous].path}`}
                             onAnimationEnd={() => setSlideGroup((prev) => {
@@ -261,7 +270,7 @@ export default function Page({params}: { params: { album: string } }) {
     const [photos] = useRecoilState(albumsState);
     const router = useRouter();
     useEffect(() => {
-        if(selectedAlbum !== 'about'){
+        if (selectedAlbum !== 'about') {
             if (photos && Object.keys(photos).length > 0 && !photos[selectedAlbum]) {
                 router.push(`/${Object.keys(photos)[0]}`)
             }
@@ -272,15 +281,16 @@ export default function Page({params}: { params: { album: string } }) {
 
         <div className={"px-4 w-full flex justify-center"}>
             {selectedAlbum === "about" ? <div className="flex flex-col items-center justify-center text-white">
-                <section className={"flex flex-col gap-3 justify-center [&>*]:font-bold"}>
-                    <Link href={"https://lyu.sh"} target={"_blank"}>Portfolio</Link>
-                    <Link href={"https://www.linkedin.com/in/dan-lyu/"} target={"_blank"}>LinkedIn</Link>
-                    <Link href={"https://www.figma.com/@prushka"} target={"_blank"}>Figma</Link>
-                    <Link href={"https://github.com/Prushka"} target={"_blank"}>GitHub</Link>
-                    <Link href={"https://github.com/Prushka/photosite"} target={"_blank"}>Made using Photosite (by me)</Link>
-                </section>
-            </div> :
-            photos[selectedAlbum]?.photos &&
+                    <section className={"flex flex-col gap-3 justify-center [&>*]:font-bold"}>
+                        <Link href={"https://lyu.sh"} target={"_blank"}>Portfolio</Link>
+                        <Link href={"https://www.linkedin.com/in/dan-lyu/"} target={"_blank"}>LinkedIn</Link>
+                        <Link href={"https://www.figma.com/@prushka"} target={"_blank"}>Figma</Link>
+                        <Link href={"https://github.com/Prushka"} target={"_blank"}>GitHub</Link>
+                        <Link href={"https://github.com/Prushka/photosite"} target={"_blank"}>Made using Photosite (by
+                            me)</Link>
+                    </section>
+                </div> :
+                photos[selectedAlbum]?.photos &&
                 <>
                     <ImageSlider photos={photos[selectedAlbum]?.photos} selected={selectedPhoto}
                                  open={open} setOpen={setOpen}/>
@@ -304,8 +314,8 @@ export default function Page({params}: { params: { album: string } }) {
                                 <FadeInImage
                                     previewOnly
                                     loading={"lazy"}
-                                             src={`${data.path}`}
-                                             alt={data.path} width={data.width} height={data.height}/>
+                                    src={`${data.path}`}
+                                    alt={data.path} width={data.width} height={data.height}/>
                             </div>)}
                     /></>
             }

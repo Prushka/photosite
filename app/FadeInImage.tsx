@@ -42,6 +42,7 @@ const FadeInImage: React.FC<ImageProps> = ({ src, alt, className, width, height,
                  !fadeIn ? '' :  isLoaded ? 'opacity-100' : 'opacity-0'
                 } ${fadeIn ? 'transition-opacity duration-500 delay-75 ease-in-out' : ''}`}
                 onLoad={handleImageLoad}
+                unoptimized
             />
     );
 };
