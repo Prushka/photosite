@@ -7,7 +7,6 @@ RUN yarn install
 FROM node:lts AS builder
 WORKDIR /app
 COPY ./ .
-COPY ./.env .
 COPY --from=dependencies /app/node_modules ./node_modules
 RUN yarn run build
 FROM node:lts AS runner
