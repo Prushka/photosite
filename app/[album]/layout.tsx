@@ -13,10 +13,10 @@ export default function Layout({ params, children }: { params: { album: string }
         <main className="flex w-full flex-col items-center">
             <header
                 className={"w-full sticky top-0 p-8 justify-between flex items-center z-10 mb-6"}>
-                <p className={"flex flex-col gap-1 font-bold cursor-pointer text-5xl"}>
+                <p className={"flex flex-col gap-1 font-bold cursor-pointer text-5xl max-md:text-4xl"}>
                     <Link href={"/"} className={"fascinate"}>DAN<br/> LYU</Link>
                 </p>
-                <div className={"flex gap-8"}>
+                <div className={"flex gap-8 max-md:gap-6"}>
                     {Object.keys(photos).map((album) => (
                         <Link key={album}
                               href={`/${album}`}
