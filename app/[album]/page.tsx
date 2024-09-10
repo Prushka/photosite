@@ -162,7 +162,7 @@ function ImageSlider({photos, selected, open, setOpen}:
         <div className={"flex justify-between items-center flex-1 overflow-auto w-full relative"}>
 
             <div className={`flex flex-row-reverse gap-3 max-md:gap-1 items-center p-2 w-full absolute top-0 right-0 z-20 transition-opacity duration-300 ${controlHidden ? 'opacity-0 pointer-events-none' :'opacity-100'}`}>
-                <button className={"text-gray-50 p-2 hover:text-gray-300"}>
+                <button className={"text-gray-50 p-2 hover:text-gray-200"}>
                     <X
                         className={"w-12 h-12 max-md:w-10 max-md:h-10"}
                         strokeWidth={1} onClick={() => setOpen(false)}/>
@@ -173,7 +173,7 @@ function ImageSlider({photos, selected, open, setOpen}:
                         e.stopPropagation()
                         setPopOverOpen((prev) => !prev)
                     }}>
-                        <Aperture className={"w-9 h-9 max-md:w-8 max-md:h-8 transition-colors text-gray-50 hover:text-gray-300"} strokeWidth={1}
+                        <Aperture className={"w-9 h-9 max-md:w-8 max-md:h-8 transition-colors text-gray-50 hover:text-gray-200"} strokeWidth={1}
                         />
                     </PopoverTrigger>
                     <PopoverContent
@@ -209,7 +209,7 @@ function ImageSlider({photos, selected, open, setOpen}:
                     updateSelected(-1);
                     e.stopPropagation();
                 }}
-                        className={`text-gray-50 p-1.5 max-md:p-0.5 hover:text-gray-300 ${slideGroup.current === 0 ? 'opacity-0':''}`}>
+                        className={`text-gray-50 p-1.5 max-md:p-0.5 hover:text-gray-200 ${slideGroup.current === 0 ? 'opacity-0':''}`}>
                     <ChevronLeft
                         className={"w-16 h-16 max-md:w-12 max-md:h-12"} strokeWidth={1}/>
                 </button>
@@ -218,7 +218,7 @@ function ImageSlider({photos, selected, open, setOpen}:
                     updateSelected(1);
                     e.stopPropagation();
                 }}
-                        className={`text-gray-50 p-1.5 max-md:p-0.5 hover:text-gray-300 ${slideGroup.current === photos.length - 1 ? 'opacity-0':''}`}>
+                        className={`text-gray-50 p-1.5 max-md:p-0.5 hover:text-gray-200 ${slideGroup.current === photos.length - 1 ? 'opacity-0':''}`}>
                     <ChevronRight className={"w-16 h-16 max-md:w-12 max-md:h-12"} strokeWidth={1}/>
                 </button>
             </div>
