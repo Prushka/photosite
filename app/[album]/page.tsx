@@ -67,11 +67,9 @@ function ImageSlider({photos, selected, open, setOpen}:
         };
     }, [slideGroup, popOverOpen]);
     useEffect(() => {
-        if (selected !== slideGroup.current) {
-            setSlideGroup((prev) => {
-                return {current: selected, previous: undefined}
-            });
-        }
+        setSlideGroup((prev) => {
+            return {current: selected, previous: undefined}
+        });
     }, [selected]);
     useEffect(() => {
         if (open) {
@@ -89,6 +87,39 @@ function ImageSlider({photos, selected, open, setOpen}:
                 previous: prev.current}
         });
     }, [photos.length]);
+
+    useEffect(() => {
+        let xDown: number | null = null;
+        let yDown: number | null = null;
+        const handleTouchStart = (e: TouchEvent) => {
+            xDown = e.touches[0].clientX;
+            yDown = e.touches[0].clientY;
+        }
+        const handleTouchMove = (e: TouchEvent) => {
+            if (!xDown || !yDown) {
+                return;
+            }
+            let xUp = e.touches[0].clientX;
+            let yUp = e.touches[0].clientY;
+            let xDiff = xDown - xUp;
+            let yDiff = yDown - yUp;
+            if (Math.abs(xDiff) > Math.abs(yDiff)) {
+                if (xDiff > 0) {
+                    updateSelected(1);
+                } else {
+                    updateSelected(-1);
+                }
+            }
+            xDown = null;
+            yDown = null;
+        }
+        document.addEventListener('touchstart', handleTouchStart, false);
+        document.addEventListener('touchmove', handleTouchMove, false);
+        return () => {
+            document.removeEventListener('touchstart', handleTouchStart);
+            document.removeEventListener('touchmove', handleTouchMove);
+        }
+    }, [updateSelected]);
     useEffect(() => {
         const keyListener = (e: KeyboardEvent) => {
             if (e.key === 'ArrowLeft') {
