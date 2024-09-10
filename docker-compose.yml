@@ -1,0 +1,14 @@
+services:
+  photosite:
+    image: meinya/photosite:latest
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - TZ=America/Toronto
+      - NEXT_PUBLIC_IMG_HOST=http://localhost:3005
+      - RAW=/raw
+      - PREVIEW=/preview
+    volumes:
+      - /Users/dan/Docker/photosite/raw:/raw
+      - /Users/dan/Docker/photosite/preview:/preview
