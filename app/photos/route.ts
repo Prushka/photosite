@@ -1,14 +1,19 @@
-import {NextResponse} from "next/server";
+export const dynamic = "force-dynamic";
 
-import {cache} from 'react'
+import {NextResponse} from "next/server";
 import * as fs from "node:fs";
 
 import sharp from 'sharp';
 import exif, {Exif} from "exif-reader";
 import path from "node:path";
 
+let albums = ""
+
 export async function GET() {
-    return new NextResponse(JSON.stringify(await getPhotos()));
+    if(albums === "") {
+        albums = JSON.stringify(await getAlbums());
+    }
+    return new NextResponse(albums);
 }
 
 export interface Photo {
@@ -18,7 +23,6 @@ export interface Photo {
     width: number
     height: number
     size: number
-    src: string
 }
 
 export interface Album {
@@ -31,10 +35,11 @@ export interface Album {
 // avif & webp: user can't save and share on discord
 
 const acceptable = ['jpg', 'jpeg', 'avif', 'webp', 'png', 'gif']
-export const getPhotos = cache(async () => {
+
+const getAlbums = async () => {
     const albums: { [key: string]: Album } = {}
-    const root = process.env.NEXT_PUBLIC_RAW!
-    const previewRoot = process.env.NEXT_PUBLIC_PREVIEW!
+    const root = process.env.RAW!
+    const previewRoot = process.env.PREVIEW!
     const results = fs.readdirSync(root, {recursive: true});
     const previewResults = fs.readdirSync(previewRoot, {recursive: true});
     const existingPreviews: {[key:string]: boolean} = {}
@@ -56,7 +61,6 @@ export const getPhotos = cache(async () => {
                     }
                     albums[albumName].photos.push({exif: exifData, path: fPath,
                         fullPath,
-                        src: `http://localhost:3005/raw/${fPath}`,
                         width: metadata.width, height: metadata.height,
                         size: fileSize
                     });
@@ -84,5 +88,5 @@ export const getPhotos = cache(async () => {
         })
     }
     return albums
-})
+}
 
