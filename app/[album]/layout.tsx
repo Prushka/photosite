@@ -6,7 +6,7 @@ import {albumsState} from "@/app/loader";
 import {useState} from "react";
 
 export default function Layout({ params, children }: { params: { album: string }, children: any }) {
-    const [selectedAlbum, setSelectedAlbum] = useState<string>(params.album.toLowerCase());
+    const [selectedAlbum,] = useState<string>(params.album.toLowerCase());
 
     const [photos] = useRecoilState(albumsState);
     return (

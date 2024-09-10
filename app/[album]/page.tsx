@@ -7,12 +7,23 @@ import {Masonry} from "react-plock";
 import {Photo} from "@/app/photos/route";
 import {useRecoilState} from "recoil";
 import {albumsState} from "@/app/loader";
-import {Aperture, ChevronLeft, ChevronRight, Gem, X} from "lucide-react";
+import {
+    Aperture,
+    Camera,
+    ChevronLeft,
+    ChevronRight,
+    Proportions,
+    ScanSearch,
+    Shell,
+    Telescope,
+    Timer,
+    X
+} from "lucide-react";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 
 function Row({icon, title, content}: { icon: any, title: string, content: string | undefined | number }) {
     return (content && <div className={"flex gap-4 justify-between items-center text-sm"}>
-        <div className={"flex gap-2"}>
+        <div className={"flex gap-2 items-center justify-center"}>
             <div className={"shrink-0"}>{icon}</div>
             <p className={"font-bold"}>{title}</p>
         </div>
@@ -67,7 +78,7 @@ function ImageSlider({photos, selected, open, setOpen}:
         };
     }, [slideGroup, popOverOpen]);
     useEffect(() => {
-        setSlideGroup((prev) => {
+        setSlideGroup(() => {
             return {current: selected, previous: undefined}
         });
     }, [selected]);
@@ -162,7 +173,7 @@ function ImageSlider({photos, selected, open, setOpen}:
                         e.stopPropagation()
                         setPopOverOpen((prev) => !prev)
                     }}>
-                        <Aperture className={"w-10 h-10 max-md:w-8 max-md:h-8"} strokeWidth={1}
+                        <Aperture className={"w-9 h-9 max-md:w-8 max-md:h-8 transition-colors text-gray-50 hover:text-gray-300"} strokeWidth={1}
                         />
                     </PopoverTrigger>
                     <PopoverContent
@@ -170,20 +181,20 @@ function ImageSlider({photos, selected, open, setOpen}:
                         onClick={(e) => e.stopPropagation()}
                         align={"center"}>
                         {slideGroup.current !== undefined &&
-                            <div className={"flex flex-col gap-3"}>
-                                <Row icon={<Gem size={24} strokeWidth={1}/>} title={"Camera"}
+                            <div className={"flex flex-col gap-4"}>
+                                <Row icon={<Camera size={20} strokeWidth={1}/>} title={"Camera"}
                                      content={photos[slideGroup.current].exif.Image?.Model}/>
-                                <Row icon={<Gem size={24} strokeWidth={1}/>} title={"Resolution"}
+                                <Row icon={<Proportions size={20} strokeWidth={1}/>} title={"Resolution"}
                                      content={`${photos[slideGroup.current].width} x ${photos[slideGroup.current].height}`}/>
-                                <Row icon={<Gem size={24} strokeWidth={1}/>} title={"Exposure Time"}
+                                <Row icon={<Timer size={20} strokeWidth={1}/>} title={"Exposure Time"}
                                      content={`${photos[slideGroup.current].exif.Photo?.ExposureTime?.toFixed(4)}s`}/>
-                                <Row icon={<Gem size={24} strokeWidth={1}/>} title={"Aperture"}
+                                <Row icon={<Aperture size={20} strokeWidth={1}/>} title={"Aperture"}
                                      content={`f/${photos[slideGroup.current].exif.Photo?.FNumber}`}/>
-                                <Row icon={<Gem size={24} strokeWidth={1}/>} title={"ISO"}
+                                <Row icon={<Shell size={20} strokeWidth={1}/>} title={"ISO"}
                                      content={`${photos[slideGroup.current].exif.Photo?.ISOSpeedRatings}`}/>
-                                <Row icon={<Gem size={24} strokeWidth={1}/>} title={"Focal Length"}
+                                <Row icon={<Telescope size={20} strokeWidth={1}/>} title={"Focal Length"}
                                      content={`${photos[slideGroup.current].exif.Photo?.FocalLength}mm`}/>
-                                <Row icon={<Gem size={24} strokeWidth={1}/>} title={"Subject Distance"}
+                                <Row icon={<ScanSearch size={20} strokeWidth={1}/>} title={"Subject Distance"}
                                      content={`${photos[slideGroup.current].exif.Photo?.SubjectDistance !== undefined 
                                          ? photos[slideGroup.current].exif.Photo?.SubjectDistance! > 100000 ? 'MAX' : 
                                              photos[slideGroup.current].exif.Photo?.SubjectDistance : ''}`}/>
@@ -243,7 +254,7 @@ function ImageSlider({photos, selected, open, setOpen}:
 }
 
 export default function Page({params}: { params: { album: string } }) {
-    const [selectedAlbum, setSelectedAlbum] = useState<string>(params.album.toLowerCase());
+    const [selectedAlbum,] = useState<string>(params.album.toLowerCase());
     const [open, setOpen] = useState<boolean>(false);
     const [selectedPhoto, setSelectedPhoto] = useState<number>(0);
     const [photos] = useRecoilState(albumsState);
