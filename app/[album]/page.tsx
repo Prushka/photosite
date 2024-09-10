@@ -275,11 +275,12 @@ export default function Page({params}: { params: { album: string } }) {
         <div className={"px-4 w-full flex justify-center"}>
             {selectedAlbum === "about" ? <div className="flex flex-col items-center justify-center text-white">
                     <section className={"flex flex-col gap-3 justify-center [&>*]:font-bold"}>
+                        <Link href={"mailto:dan@lyu.sh"}>dan@lyu.sh</Link>
                         <Link href={"https://lyu.sh"} target={"_blank"}>Portfolio</Link>
                         <Link href={"https://www.linkedin.com/in/dan-lyu/"} target={"_blank"}>LinkedIn</Link>
                         <Link href={"https://www.figma.com/@prushka"} target={"_blank"}>Figma</Link>
                         <Link href={"https://github.com/Prushka"} target={"_blank"}>GitHub</Link>
-                        <Link href={"https://github.com/Prushka/photosite"} target={"_blank"}>Made using Photosite (by
+                        <Link href={"https://github.com/Prushka/photosite"} target={"_blank"}>Made with Photosite (by
                             me)</Link>
                     </section>
                 </div> :
