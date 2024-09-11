@@ -48,6 +48,7 @@ export const RawImage: React.FC<ImageProps> = ({
                                                    isCurrent
                                                }) => {
     const [isLoaded, setIsLoaded] = useState(false);
+    const [previewAnimatedIn, setPreviewAnimatedIn] = useState(false);
 
     const handleImageLoad = () => {
         setIsLoaded(true);
@@ -63,7 +64,7 @@ export const RawImage: React.FC<ImageProps> = ({
                 loading={loading}
                 onAnimationEnd={onAnimationEnd}
                 onTransitionEnd={onTransitionEnd}
-                className={`${!isLoaded ? 'hidden' : ''} ${className}`}
+                className={`${!isLoaded ? 'hidden' : !previewAnimatedIn ? 'animate-fadeIn' : ''} ${className}`}
                 onLoad={handleImageLoad}
                 unoptimized
             />
@@ -75,7 +76,10 @@ export const RawImage: React.FC<ImageProps> = ({
                         width={photo.width}
                         height={photo.height}
                         loading={loading}
-                        onAnimationEnd={onAnimationEnd}
+                        onAnimationEnd={(e) => {
+                            setPreviewAnimatedIn(true);
+                            onAnimationEnd && onAnimationEnd(e);
+                        }}
                         onTransitionEnd={onTransitionEnd}
                         className={`${className} animate-fadeIn`}
                         unoptimized
