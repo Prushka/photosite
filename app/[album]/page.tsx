@@ -1,7 +1,7 @@
 'use client'
 
 import {useCallback, useEffect, useState} from "react";
-import FadeInImage from "@/app/FadeInImage";
+import {PreviewImage, RawImage} from "@/app/image";
 import {useRouter} from "next/navigation";
 import {Masonry} from "react-plock";
 import {Photo} from "@/app/photos/route";
@@ -231,26 +231,21 @@ function ImageSlider({photos, selected, open, setOpen}:
 
             <div className={"relative h-full flex-1 overflow-auto w-full"}>
                 {slideGroup.current !== undefined && <>
-                    <FadeInImage
+                    <RawImage
                         key={photos[slideGroup.current].path}
-                        fadeIn={false}
-                        className={"absolute object-contain h-full w-full animate-fadeIn z-10"}
+                        isCurrent
+                        className={"absolute object-contain h-full w-full z-10"}
                         loading={"eager"}
-                        src={`${photos[slideGroup.current].path}`}
-                        alt={photos[slideGroup.current].path} width={photos[slideGroup.current].width}
-                        height={photos[slideGroup.current].height}/>
+                        photo={photos[slideGroup.current]}/>
                     {slideGroup.previous !== undefined &&
-                        <FadeInImage
-                            fadeIn={false}
+                        <RawImage
                             key={photos[slideGroup.previous].path}
-                            className={"absolute object-contain h-full w-full animate-fadeOut z-0 opacity-0"}
+                            className={"absolute object-contain h-full w-full z-0 opacity-0"}
                             loading={"eager"}
-                            src={`${photos[slideGroup.previous].path}`}
                             onAnimationEnd={() => setSlideGroup((prev) => {
                                 return {current: prev.current, previous: undefined}
                             })}
-                            alt={photos[slideGroup.previous].path} width={photos[slideGroup.previous].width}
-                            height={photos[slideGroup.previous].height}/>
+                            photo={photos[slideGroup.previous]}/>
                     }
                 </>
                 }
@@ -303,11 +298,9 @@ export default function Page({params}: { params: { album: string } }) {
                                             setOpen(true)
                                         }}
                             >
-                                <FadeInImage
-                                    previewOnly
+                                <PreviewImage
                                     loading={"lazy"}
-                                    src={`${data.path}`}
-                                    alt={data.path} width={data.width} height={data.height}/>
+                                    photo={data}/>
                             </div>
                         }}
                     /></>
