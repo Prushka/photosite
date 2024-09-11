@@ -55,7 +55,7 @@ export const RawImage: React.FC<ImageProps> = ({
     };
 
     return (
-        isCurrent ? <div className={"relative w-full h-full"}> <Image
+        isCurrent ? <> <Image
                 src={`${window.location.origin}/static/raw/${photo.path}`}
                 alt={photo.path}
                 onClick={onClick}
@@ -64,11 +64,11 @@ export const RawImage: React.FC<ImageProps> = ({
                 loading={loading}
                 onAnimationEnd={onAnimationEnd}
                 onTransitionEnd={onTransitionEnd}
-                className={`${!isLoaded || !previewAnimatedIn ? 'hidden' : ''} ${className}`}
+                className={`${(!isLoaded || !previewAnimatedIn) ? 'hidden' : ''} ${className}`}
                 onLoad={handleImageLoad}
                 unoptimized
             />
-                {!isLoaded || !previewAnimatedIn &&
+                {(!isLoaded || !previewAnimatedIn) &&
                     <Image
                         src={`${window.location.origin}/static/preview/${photo.path}`}
                         alt={photo.path}
@@ -84,10 +84,7 @@ export const RawImage: React.FC<ImageProps> = ({
                         className={`${className} animate-fadeIn`}
                         unoptimized
                     />}
-            {/*{!isLoaded && <div className={"absolute right-0 bottom-0 z-20 mr-4 mb-4 text-neutral-200"}>*/}
-            {/*    <LoaderCircle strokeWidth={1} size={36} className={"animate-spin"}/>*/}
-            {/*</div>}*/}
-            </div> : <Image
+        </> : <Image
                 src={`${window.location.origin}/static/preview/${photo.path}`}
                 alt={photo.path}
                 onClick={onClick}
