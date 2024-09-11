@@ -55,7 +55,7 @@ export const RawImage: React.FC<ImageProps> = ({
     };
 
     return (
-        isCurrent ? <> <Image
+        isCurrent ? <div className={"relative w-full h-full"}> <Image
                 src={`${window.location.origin}/static/raw/${photo.path}`}
                 alt={photo.path}
                 onClick={onClick}
@@ -84,7 +84,10 @@ export const RawImage: React.FC<ImageProps> = ({
                         className={`${className} animate-fadeIn`}
                         unoptimized
                     />}
-            </> : <Image
+            {/*{!isLoaded && <div className={"absolute right-0 bottom-0 z-20 mr-4 mb-4 text-neutral-200"}>*/}
+            {/*    <LoaderCircle strokeWidth={1} size={36} className={"animate-spin"}/>*/}
+            {/*</div>}*/}
+            </div> : <Image
                 src={`${window.location.origin}/static/preview/${photo.path}`}
                 alt={photo.path}
                 onClick={onClick}
