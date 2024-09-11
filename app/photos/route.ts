@@ -31,7 +31,7 @@ export interface Album {
     name: string
 }
 
-// preview: jpg: 1000px, 80% quality, avif: 1000px, 90% quality
+// preview: jpg: 1500px, 80% quality, avif: 1000px, 90% quality
 // raw: jpg: 5000px, 80% quality, avif: 6000px, 90% quality
 // avif & webp: user can't save and share on discord
 
