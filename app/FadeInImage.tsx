@@ -29,7 +29,7 @@ const FadeInImage: React.FC<ImageProps> = ({ src, alt, className, width, height,
     };
 
     return (
-            <Image
+           <> <Image
                 src={`${window.location.origin}/static/${previewOnly ? 'preview' : 'raw'}/${src}`}
                 alt={alt}
                 onClick={onClick}
@@ -44,6 +44,23 @@ const FadeInImage: React.FC<ImageProps> = ({ src, alt, className, width, height,
                 onLoad={handleImageLoad}
                 unoptimized
             />
+               {!isLoaded && !previewOnly &&
+                   <Image
+                       src={`${window.location.origin}/static/preview/${src}`}
+                       alt={alt}
+                       onClick={onClick}
+                       width={width}
+                       height={height}
+                       loading={loading}
+                       onAnimationEnd={onAnimationEnd}
+                       onTransitionEnd={onTransitionEnd}
+                       className={`${className} ${
+                           !fadeIn ? '' :  isLoaded ? 'opacity-100' : 'opacity-0'
+                       } ${fadeIn ? 'transition-opacity duration-500 delay-75 ease-in-out' : ''}`}
+                       unoptimized
+                   />}
+           </>
+
     );
 };
 

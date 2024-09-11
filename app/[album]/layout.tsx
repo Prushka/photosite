@@ -20,7 +20,7 @@ export default function Layout({ params, children }: { params: { album: string }
                     {Object.keys(photos).concat(["about"]).map((album) => (
                         <Link key={album}
                               href={`/${album}`}
-                              className={`font-extrabold flex flex-col gap-2 ${album === selectedAlbum ? 'underline-offset-2 underline' : ''}`}>
+                              className={`max-sm:text-sm font-extrabold flex flex-col gap-2 ${album === selectedAlbum ? 'underline-offset-2 underline' : ''}`}>
                             {album.toUpperCase()}
                         </Link>
                     ))}
