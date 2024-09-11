@@ -23,6 +23,7 @@ export interface Photo {
     width: number
     height: number
     size: number
+    idx: number
 }
 
 export interface Album {
@@ -62,7 +63,7 @@ const getAlbums = async () => {
                     albums[albumName].photos.push({exif: exifData, path: fPath,
                         fullPath,
                         width: metadata.width, height: metadata.height,
-                        size: fileSize
+                        size: fileSize, idx: -1
                     });
                     if (!existingPreviews[`${fPath}`]) {
                         console.warn(`${fPath} preview missing`)
@@ -86,6 +87,11 @@ const getAlbums = async () => {
             }
             return 0
         })
+    }
+    for (const album in albums) {
+        for (let i = 0; i < albums[album].photos.length; i++) {
+            albums[album].photos[i].idx = i
+        }
     }
     return albums
 }

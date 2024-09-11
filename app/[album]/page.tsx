@@ -23,7 +23,7 @@ import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import Link from "next/link";
 
 function Row({icon, title, content}: { icon: any, title: string, content: string | undefined | number }) {
-    return (content && <div className={"flex gap-4 justify-between items-center text-sm"}>
+    return (content && <div className={"flex gap-4 justify-between items-center text-sm max-sm:text-[0.825rem]"}>
         <div className={"flex gap-2 items-center justify-center"}>
             <div className={"shrink-0"}>{icon}</div>
             <p className={"font-bold"}>{title}</p>
@@ -75,14 +75,17 @@ function ImageSlider({photos, selected, open, setOpen}:
         setSlideGroup(() => {
             return {current: selected, previous: undefined}
         });
-    }, [selected]);
+    }, [selected, setSlideGroup]);
     useEffect(() => {
         if (open) {
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'auto';
+            if(slideGroup.current !== undefined && slideGroup.current !== selected) {
+                document.getElementById(`${slideGroup.current}`)?.scrollIntoView();
+            }
         }
-    }, [open]);
+    }, [open, selected, slideGroup]);
     const updateSelected = useCallback((direction: number) => {
         setSlideGroup((prev) => {
             if ((prev.current == 0 && direction == -1) || (prev.current == photos.length - 1 && direction == 1)) {
@@ -93,7 +96,7 @@ function ImageSlider({photos, selected, open, setOpen}:
                 previous: prev.current
             }
         });
-    }, [photos.length]);
+    }, [photos]);
 
     useEffect(() => {
         let xDown: number | null = null;
@@ -184,7 +187,7 @@ function ImageSlider({photos, selected, open, setOpen}:
                         onClick={(e) => e.stopPropagation()}
                         align={"center"}>
                         {slideGroup.current !== undefined &&
-                            <div className={"flex flex-col gap-4"}>
+                            <div className={"flex flex-col gap-4 max-sm:gap-3"}>
                                 <Row icon={<Camera size={20} strokeWidth={1}/>} title={"Camera"}
                                      content={photos[slideGroup.current].exif.Image?.Model}/>
                                 <Row icon={<Proportions size={20} strokeWidth={1}/>} title={"Resolution"}
@@ -291,22 +294,22 @@ export default function Page({params}: { params: { album: string } }) {
                             gap: [18, 18, 18],
                             media: [1000, 1400, 2500],
                         }}
-                        render={(data, idx) => (
-                            <div key={idx} className={"cursor-pointer relative image-container"}
-                                 onClick={() => {
-                                     const selected = photos[selectedAlbum]?.photos.findIndex(photo => photo.path === data.path);
-                                     if (selected !== undefined) {
-                                         setSelectedPhoto(selected);
-                                         setOpen(true)
-                                     }
-                                 }}
+                        render={(data) => {
+                            return <div
+                                id={`${data.idx}`}
+                                key={data.path} className={"cursor-pointer relative image-container"}
+                                        onClick={() => {
+                                            setSelectedPhoto(data.idx);
+                                            setOpen(true)
+                                        }}
                             >
                                 <FadeInImage
                                     previewOnly
                                     loading={"lazy"}
                                     src={`${data.path}`}
                                     alt={data.path} width={data.width} height={data.height}/>
-                            </div>)}
+                            </div>
+                        }}
                     /></>
             }
         </div>
