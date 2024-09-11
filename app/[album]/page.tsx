@@ -234,13 +234,13 @@ function ImageSlider({photos, selected, open, setOpen}:
                     <RawImage
                         key={photos[slideGroup.current].path}
                         isCurrent
-                        className={"absolute object-contain h-full w-full z-10"}
+                        className={"absolute object-contain h-full w-full z-0"}
                         loading={"eager"}
                         photo={photos[slideGroup.current]}/>
                     {slideGroup.previous !== undefined &&
                         <RawImage
                             key={photos[slideGroup.previous].path}
-                            className={"absolute object-contain h-full w-full z-0 opacity-0"}
+                            className={"absolute object-contain h-full w-full z-10 opacity-0"}
                             loading={"eager"}
                             onAnimationEnd={() => setSlideGroup((prev) => {
                                 return {current: prev.current, previous: undefined}

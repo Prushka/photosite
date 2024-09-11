@@ -64,11 +64,11 @@ export const RawImage: React.FC<ImageProps> = ({
                 loading={loading}
                 onAnimationEnd={onAnimationEnd}
                 onTransitionEnd={onTransitionEnd}
-                className={`${!isLoaded ? 'hidden' : !previewAnimatedIn ? 'animate-fadeIn' : ''} ${className}`}
+                className={`${!isLoaded || !previewAnimatedIn ? 'hidden' : ''} ${className}`}
                 onLoad={handleImageLoad}
                 unoptimized
             />
-                {!isLoaded &&
+                {!isLoaded || !previewAnimatedIn &&
                     <Image
                         src={`${window.location.origin}/static/preview/${photo.path}`}
                         alt={photo.path}
