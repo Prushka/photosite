@@ -150,15 +150,13 @@ function ImageSlider({photos, selected, open, setOpen}:
         }
     }, [photos.length, selected, setOpen, updateSelected]);
     return open ? <div
-        className={"fixed top-0 left-0 w-full h-full bg-black bg-opacity-90 backdrop-blur z-50 flex flex-col items-center cursor-zoom-out " +
+        className={"fixed top-0 left-0 w-full h-full bg-black bg-opacity-90 backdrop-blur z-50 flex flex-col items-center " +
             `${open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
         onClick={() => {
             if (popOverOpen) {
                 setPopOverOpen(false);
             } else if (controlHidden) {
                 setControlHidden(false);
-            } else {
-                setOpen(false)
             }
         }}
     >
