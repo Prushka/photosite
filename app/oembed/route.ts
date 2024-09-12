@@ -1,5 +1,5 @@
 import {NextRequest, NextResponse} from "next/server";
-import {Albums} from "@/app/photos/route";
+import {Albums} from "@/app/photos/album";
 
 export async function GET(request: NextRequest) {
 

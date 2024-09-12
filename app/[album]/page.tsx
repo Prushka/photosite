@@ -21,7 +21,6 @@ import {
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import Link from "next/link";
 import {Photo} from "@/app/photos/album";
-import ImageFullScreenPreview from "@/app/[album]/preview";
 
 function Row({icon, title, content}: { icon: any, title: string, content: string | undefined | number }) {
     return (content && <div className={"flex gap-4 justify-between items-center text-sm max-sm:text-[0.825rem]"}>

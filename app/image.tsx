@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import Image from "next/image";
-import {Photo} from "@/app/photos/route";
+import {Photo} from "@/app/photos/album";
 
 interface ImageProps {
     photo: Photo;

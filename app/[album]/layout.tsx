@@ -1,6 +1,6 @@
 import Link from "next/link";
-import {Albums} from "@/app/photos/route";
 import {Metadata, Viewport} from "next";
+import {Albums} from "@/app/photos/album";
 
 export default async function Layout({params, children}: { params: { album: string }, children: any }) {
     const selectedAlbum = params.album.toLowerCase();

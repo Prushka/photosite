@@ -1,9 +1,9 @@
 'use client'
 
-import {atom, RecoilRoot, RecoilState, useRecoilState} from "recoil";
+import {atom, RecoilState, useRecoilState} from "recoil";
 import {useEffect} from "react";
 import axios from "axios";
-import {Album} from "@/app/photos/route";
+import {Album} from "@/app/photos/album";
 
 export const albumsState: RecoilState<{ [key: string]: Album }> =
     atom({
