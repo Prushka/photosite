@@ -44,7 +44,8 @@ export async function generateMetadata(
     const photos = await Albums()
     const realId = Object.keys(photos).find((album) => album.toLowerCase() === id)
     const photoCount = photos[id]?.photos?.length
-    const description = !photoCount ? '٩(˘◡˘)۶' : `${photoCount} photos  |  ٩(˘◡˘)۶`
+    const totalPhotos = Object.values(photos).reduce((acc, album) => acc + album.photos.length, 0)
+    const description = photoCount && totalPhotos ? `${photoCount}/${totalPhotos} photos in ${idDisplay}` : ''
     return {
         title: `${idDisplay} - Dan Lyu`,
         description,
@@ -61,6 +62,13 @@ export async function generateMetadata(
             description,
             siteName: "Dan's Photo Gallery",
             url: `${process.env.NEXT_PUBLIC_HOST!}/${id}`,
+        },
+        icons: {
+            other: {
+                rel: 'alternate',
+                url: `${process.env.NEXT_PUBLIC_HOST!}/oembed?album=${id}`,
+                type: 'application/json+oembed'
+            },
         },
         twitter: {
             card: "summary_large_image"
