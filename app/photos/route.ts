@@ -7,13 +7,22 @@ import sharp from 'sharp';
 import exif, {Exif} from "exif-reader";
 import path from "node:path";
 
-let albums = ""
+export let albums : {[key: string]: Album} | null = null;
+let albumsString = '';
+
+export async function Albums() {
+    if(!albums) {
+        albums = await getAlbums();
+    }
+    if(albumsString === '') {
+        albumsString = JSON.stringify(albums);
+    }
+    return albums
+}
 
 export async function GET() {
-    if(albums === "") {
-        albums = JSON.stringify(await getAlbums());
-    }
-    return new NextResponse(albums);
+    await Albums();
+    return new NextResponse(albumsString);
 }
 
 export interface Photo {
@@ -58,7 +67,7 @@ const getAlbums = async () => {
                     const sections = fPath.split('/');
                     const albumName = sections[sections.length - 2].toLowerCase();
                     if (!albums[albumName]) {
-                        albums[albumName] = {photos: [], name: albumName};
+                        albums[albumName] = {photos: [], name: sections[sections.length - 2]};
                     }
                     albums[albumName].photos.push({exif: exifData, path: fPath,
                         fullPath,

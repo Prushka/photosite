@@ -1,13 +1,33 @@
-import type {Metadata} from "next";
+import {Metadata, Viewport} from "next";
 import "./globals.css";
 import Loader from "@/app/loader";
 import RecoilRootWrapper from "@/app/RecoilRootWrapper";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-    title: "Dan Lyu - Photo Library",
-    description: "A photo library",
+    title: `Home - Dan Lyu`,
+    description : '٩(˘◡˘)۶',
+    applicationName: "Photosite",
+    keywords: ["photography", "portfolio", "dan lyu", "gallery", "software engineer"],
+    creator: "Dan Lyu",
+    publisher: "Dan Lyu",
+    openGraph: {
+        title: `Home - Dan Lyu`,
+        images: `${process.env.NEXT_PUBLIC_HOST!}/static/preview/cover.jpg`,
+        authors: ["Dan Lyu"],
+        creators: ["Dan Lyu"],
+        description: "٩(˘◡˘)۶",
+        siteName: "Dan's Photo Gallery",
+        url: `${process.env.NEXT_PUBLIC_HOST!}`
+    },
+    twitter: {
+        card: "summary_large_image"
+    }
 };
+
+export const viewport: Viewport = {
+    themeColor: '#3b3b3b',
+}
 
 export default function RootLayout({
                                        children,

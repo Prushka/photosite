@@ -1,14 +1,10 @@
-'use client'
-
 import Link from "next/link";
-import {useRecoilState} from "recoil";
-import {albumsState} from "@/app/loader";
-import {useState} from "react";
+import {Albums} from "@/app/photos/route";
+import {Metadata, Viewport} from "next";
 
-export default function Layout({ params, children }: { params: { album: string }, children: any }) {
-    const [selectedAlbum,] = useState<string>(params.album.toLowerCase());
-
-    const [photos] = useRecoilState(albumsState);
+export default async function Layout({params, children}: { params: { album: string }, children: any }) {
+    const selectedAlbum = params.album.toLowerCase();
+    const photos = await Albums()
     return (
         <main className="flex w-full flex-col items-center">
             <header
@@ -29,4 +25,49 @@ export default function Layout({ params, children }: { params: { album: string }
             {children}
         </main>
     );
+}
+
+
+type Props = {
+    params: { album: string }
+}
+
+export const viewport: Viewport = {
+    themeColor: '#3b3b3b',
+}
+
+export async function generateMetadata(
+    {params}: Props
+): Promise<Metadata> {
+    const id = params.album.toLowerCase()
+    const idDisplay = uppercaseFirst(id)
+    const photos = await Albums()
+    const realId = Object.keys(photos).find((album) => album.toLowerCase() === id)
+    const photoCount = photos[id]?.photos?.length
+    const description = !photoCount ? '٩(˘◡˘)۶' : `${photoCount} photos  |  ٩(˘◡˘)۶`
+    return {
+        title: `${idDisplay} - Dan Lyu`,
+        description,
+        applicationName: "Photosite",
+        keywords: ["photography", "portfolio", "dan lyu", idDisplay, "gallery", "software engineer"],
+        creator: "Dan Lyu",
+        publisher: "Dan Lyu",
+        openGraph: {
+            title: `${idDisplay} - Dan Lyu`,
+            images: realId ? `${process.env.NEXT_PUBLIC_HOST!}/static/preview/${realId}/cover.jpg` :
+                `${process.env.NEXT_PUBLIC_HOST!}/static/preview/cover.jpg`,
+            authors: ["Dan Lyu"],
+            creators: ["Dan Lyu"],
+            description,
+            siteName: "Dan's Photo Gallery",
+            url: `${process.env.NEXT_PUBLIC_HOST!}/${id}`
+        },
+        twitter: {
+            card: "summary_large_image"
+        }
+    }
+}
+
+function uppercaseFirst(str: string) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
 }
