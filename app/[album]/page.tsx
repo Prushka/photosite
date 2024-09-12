@@ -102,10 +102,16 @@ function ImageSlider({photos, selected, open, setOpen}:
         let xDown: number | null = null;
         let yDown: number | null = null;
         const handleTouchStart = (e: TouchEvent) => {
+            if (e.touches.length > 1) {
+                return;
+            }
             xDown = e.touches[0].clientX;
             yDown = e.touches[0].clientY;
         }
         const handleTouchEnd = (e: TouchEvent) => {
+            if (e.touches.length > 1) {
+                return;
+            }
             if (!xDown || !yDown) {
                 return;
             }
