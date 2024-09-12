@@ -4,7 +4,6 @@ import {useCallback, useEffect, useState} from "react";
 import {PreviewImage, RawImage} from "@/app/image";
 import {useRouter} from "next/navigation";
 import {Masonry} from "react-plock";
-import {Photo} from "@/app/photos/route";
 import {useRecoilState} from "recoil";
 import {albumsState} from "@/app/loader";
 import {
@@ -21,6 +20,8 @@ import {
 } from "lucide-react";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import Link from "next/link";
+import {Photo} from "@/app/photos/album";
+import ImageFullScreenPreview from "@/app/[album]/preview";
 
 function Row({icon, title, content}: { icon: any, title: string, content: string | undefined | number }) {
     return (content && <div className={"flex gap-4 justify-between items-center text-sm max-sm:text-[0.825rem]"}>
@@ -234,8 +235,12 @@ function ImageSlider({photos, selected, open, setOpen}:
                         onClick={(event) => {
                             const image = event.currentTarget;
                             const rect = image.getBoundingClientRect();
-                            const actualWidth = image.naturalWidth * (rect.height / image.naturalHeight);
-                            const actualHeight = rect.height;
+                            let actualWidth = image.naturalWidth * (rect.height / image.naturalHeight);
+                            let actualHeight = rect.height;
+                            if (actualWidth > rect.width) {
+                                actualHeight = image.naturalHeight * (rect.width / image.naturalWidth);
+                                actualWidth = rect.width;
+                            }
                             const x = event.clientX - rect.left;
                             const y = event.clientY - rect.top;
                             const marginX = (rect.width - actualWidth) / 2;
