@@ -60,7 +60,7 @@ export async function generateMetadata(
             creators: ["Dan Lyu"],
             description,
             siteName: "Dan's Photo Gallery",
-            url: `${process.env.NEXT_PUBLIC_HOST!}/${id}`
+            url: `${process.env.NEXT_PUBLIC_HOST!}/${id}`,
         },
         twitter: {
             card: "summary_large_image"
