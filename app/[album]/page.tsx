@@ -190,7 +190,9 @@ function ImageSlider({photos, selected, open, setOpen}:
         let xDown: number | null = null;
         let yDown: number | null = null;
         const handleTouchStart = (e: TouchEvent) => {
-            if (e.touches.length > 1) {
+            if (e.touches.length > 1 ||
+                (window.visualViewport
+                    && window.visualViewport?.scale !== 1)) {
                 xDown = null;
                 yDown = null;
                 return;
@@ -199,7 +201,9 @@ function ImageSlider({photos, selected, open, setOpen}:
             yDown = e.touches[0].clientY;
         }
         const handleTouchEnd = (e: TouchEvent) => {
-            if (e.touches.length > 1) {
+            if (e.touches.length > 1 ||
+                (window.visualViewport
+                    && window.visualViewport?.scale !== 1)) {
                 xDown = null;
                 yDown = null;
                 return;
