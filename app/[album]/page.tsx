@@ -30,7 +30,7 @@ function exposureTimeToFraction(time?: number) {
     if (!time) {
         return '-';
     }
-    let fraction = '';
+    let fraction: string;
     if (time < 1) {
         fraction = `1/${Math.round(1 / time)}`
     } else {
