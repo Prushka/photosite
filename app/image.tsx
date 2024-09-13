@@ -11,6 +11,7 @@ interface ImageProps {
     onAnimationEnd?: (e: React.AnimationEvent<HTMLImageElement>) => void;
     onTransitionEnd?: (e: React.TransitionEvent<HTMLImageElement>) => void;
     isCurrent?: boolean;
+    scale?: number;
 }
 
 export const PreviewImage: React.FC<ImageProps> = ({
@@ -25,6 +26,8 @@ export const PreviewImage: React.FC<ImageProps> = ({
 
     return (
         <Image
+            decoding={'async'}
+            draggable={false}
             src={`${window.location.origin}/static/preview/${photo.path}`}
             alt={photo.path}
             onClick={onClick}
@@ -45,7 +48,8 @@ export const RawImage: React.FC<ImageProps> = ({
                                                    onClick,
                                                    onAnimationEnd,
                                                    onTransitionEnd,
-                                                   isCurrent
+                                                   isCurrent,
+    scale = 2
                                                }) => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [previewAnimatedIn, setPreviewAnimatedIn] = useState(false);
@@ -56,6 +60,8 @@ export const RawImage: React.FC<ImageProps> = ({
 
     return (
         isCurrent ? <> <Image
+                decoding={'async'}
+                draggable={false}
                 src={`${window.location.origin}/static/raw/${photo.path}`}
                 alt={photo.path}
                 onClick={onClick}
@@ -70,6 +76,8 @@ export const RawImage: React.FC<ImageProps> = ({
             />
                 {(!isLoaded || !previewAnimatedIn) &&
                     <Image
+                        decoding={'async'}
+                        draggable={false}
                         src={`${window.location.origin}/static/preview/${photo.path}`}
                         alt={photo.path}
                         onClick={onClick}
@@ -85,6 +93,8 @@ export const RawImage: React.FC<ImageProps> = ({
                         unoptimized
                     />}
         </> : <Image
+                decoding={'async'}
+                draggable={false}
                 src={`${window.location.origin}/static/preview/${photo.path}`}
                 alt={photo.path}
                 onClick={onClick}

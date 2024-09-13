@@ -10,9 +10,11 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
 }
 
 html, body, #root {
+  /*touch-action: pan-x pan-y;*/
   font-family: "Karla", sans-serif;
   color: #151515;
   scroll-behavior: smooth;

@@ -1,6 +1,6 @@
 'use client'
 
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import {PreviewImage, RawImage} from "@/app/image";
 import {useRouter} from "next/navigation";
 import {Masonry} from "react-plock";
@@ -8,28 +8,109 @@ import {useRecoilState} from "recoil";
 import {albumsState} from "@/app/loader";
 import {
     Aperture,
-    Camera,
     ChevronLeft,
     ChevronRight,
-    Proportions,
-    ScanSearch,
-    Shell,
-    Telescope,
-    Timer,
     X
 } from "lucide-react";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import Link from "next/link";
 import {Photo} from "@/app/photos/album";
 
-function Row({icon, title, content}: { icon: any, title: string, content: string | undefined | number }) {
-    return (content && <div className={"flex gap-4 justify-between items-center text-sm max-sm:text-[0.825rem]"}>
-        <div className={"flex gap-2 items-center justify-center"}>
-            <div className={"shrink-0"}>{icon}</div>
-            <p className={"font-bold"}>{title}</p>
+function formatSize(size: number) {
+    if (size < 1000) {
+        return `${size} B`
+    } else if (size < 1000000) {
+        return `${(size / 1000).toFixed(2)} KB`
+    } else {
+        return `${(size / 1000000).toFixed(2)} MB`
+    }
+}
+
+function exposureTimeToFraction(time?: number) {
+    if (!time) {
+        return '-';
+    }
+    let fraction = '';
+    if (time < 1) {
+        fraction = `1/${Math.round(1 / time)}`
+    } else {
+        fraction = `${time.toFixed(2)}`
+    }
+    return fraction + ' s';
+}
+
+const photoType : {[key:string]: string} = {
+    "jpg": "JPEG",
+    "jpeg": "JPEG",
+    "avif": "AVIF",
+    "webp": "WEBP",
+    "png": "PNG",
+    "gif": "GIF"
+}
+
+function getPhotoType(path: string | undefined) {
+    const ext : string | undefined = path?.split('.').pop()
+    if (!ext) {
+        return undefined;
+    }
+    return photoType[ext] ?
+        photoType[ext] : '';
+}
+
+function formatSubjectDistance(distance?: number) {
+    if (!distance) {
+        return '-';
+    }
+    if (distance > 10000) {
+        return 'MAX'
+    }
+    if (distance < 1) {
+        return `${(distance * 100).toFixed(0)} cm`
+    } else {
+        return `${distance.toFixed(2)} m`
+    }
+}
+
+function formatDatetime(date?: Date) {
+    // format to date only like 2024-08-03 (this format)
+    if (!date) {
+        return '';
+    }
+    return ` · ${new Date(date).toISOString().split('T')[0]}`;
+}
+
+function Exif({photo}: {photo: Photo}) {
+    const [mp] = useMemo(() => {
+        const mp = (photo.width * photo.height / 1000000).toFixed(0);
+        return [mp]
+    }, [photo]);
+    const cell = (values: (string | undefined)[]) => {
+        return values.map((value, idx) => {
+            return <p key={idx}
+                      className={`px-1 text-center flex-0 shrink-0 border-[#5f6264] ${idx === values.length - 1 ? '' : 'border-r'}`}
+            >{value ? value : '-'}</p>
+        })
+    }
+    return <div className={"drop-shadow-2xl tracking-normal items-center justify-center flex flex-col gap-1 rounded-md bg-[#222222] [&>*]:border-[#5f6264] border border-[#5f6264]"}>
+        <div className={"flex w-full items-center justify-between gap-1 bg-[#323232] rounded-t-md p-3 border-b"}>
+            <p className={"text-white"}>{photo.exif.Image?.Model}</p>
+            {getPhotoType(photo.path) && <p className={"bg-[#565656] text-white px-1 text-sm rounded-sm"}>
+                {getPhotoType(photo.path)}
+            </p>}
         </div>
-        <p>{content}</p>
-    </div>)
+        <div className={"flex flex-col gap-1 p-3 text-sm w-full border-b text-[#aeaeb3]"}>
+            <p>{photo.exif.Photo?.LensModel}{formatDatetime(photo.exif.Photo?.DateTimeOriginal)}</p>
+            <p>{mp} MP · {photo.width} × {photo.height} · {formatSize(photo.size)}</p>
+        </div>
+        <div className={"grid grid-cols-5 text-sm items-center justify-center w-full pt-2 pb-3 text-[#aeaeb3]"}>
+            {cell([
+                `ISO ${photo.exif.Photo?.ISOSpeedRatings}`,
+                `${photo.exif.Photo?.FocalLength} mm`,
+                `${formatSubjectDistance(photo.exif.Photo?.SubjectDistance)}`,
+                `f/${photo.exif.Photo?.FNumber}`,
+                `${exposureTimeToFraction(photo.exif.Photo?.ExposureTime)}`])}
+        </div>
+    </div>
 }
 
 function isTouchDevice() {
@@ -55,7 +136,7 @@ function ImageSlider({photos, selected, open, setOpen}:
             if (!popOverOpen) {
                 setControlHidden(true);
             }
-        }, 1500);
+        }, 2000);
         const mouseMove = () => {
             setControlHidden(false);
             clearTimeout(timer);
@@ -63,9 +144,16 @@ function ImageSlider({photos, selected, open, setOpen}:
                 if (!popOverOpen) {
                     setControlHidden(true);
                 }
-            }, 1500);
+            }, 2000);
         }
         document.addEventListener('mousemove', mouseMove);
+        // document.addEventListener('wheel', event => {
+        //     const { ctrlKey } = event
+        //     if (ctrlKey) {
+        //         event.preventDefault();
+        //         return
+        //     }
+        // }, { passive: false })
         return () => {
             clearTimeout(timer)
             document.removeEventListener('mousemove', mouseMove);
@@ -103,6 +191,8 @@ function ImageSlider({photos, selected, open, setOpen}:
         let yDown: number | null = null;
         const handleTouchStart = (e: TouchEvent) => {
             if (e.touches.length > 1) {
+                xDown = null;
+                yDown = null;
                 return;
             }
             xDown = e.touches[0].clientX;
@@ -110,6 +200,8 @@ function ImageSlider({photos, selected, open, setOpen}:
         }
         const handleTouchEnd = (e: TouchEvent) => {
             if (e.touches.length > 1) {
+                xDown = null;
+                yDown = null;
                 return;
             }
             if (!xDown || !yDown) {
@@ -186,28 +278,11 @@ function ImageSlider({photos, selected, open, setOpen}:
                             />
                         </PopoverTrigger>
                         <PopoverContent
-                            className={"mt-4 mr-4"}
+                            className={"mt-4 mr-4 w-96 max-w-[92vw] bg-transparent p-0 border-none"}
                             onClick={(e) => e.stopPropagation()}
                             align={"center"}>
                             {slideGroup.current !== undefined &&
-                                <div className={"flex flex-col gap-4 max-sm:gap-3"}>
-                                    <Row icon={<Camera size={20} strokeWidth={1}/>} title={"Camera"}
-                                         content={photos[slideGroup.current].exif.Image?.Model}/>
-                                    <Row icon={<Proportions size={20} strokeWidth={1}/>} title={"Resolution"}
-                                         content={`${photos[slideGroup.current].width} x ${photos[slideGroup.current].height}`}/>
-                                    <Row icon={<Timer size={20} strokeWidth={1}/>} title={"Exposure Time"}
-                                         content={`${photos[slideGroup.current].exif.Photo?.ExposureTime?.toFixed(4)}s`}/>
-                                    <Row icon={<Aperture size={20} strokeWidth={1}/>} title={"Aperture"}
-                                         content={`f/${photos[slideGroup.current].exif.Photo?.FNumber}`}/>
-                                    <Row icon={<Shell size={20} strokeWidth={1}/>} title={"ISO"}
-                                         content={`${photos[slideGroup.current].exif.Photo?.ISOSpeedRatings}`}/>
-                                    <Row icon={<Telescope size={20} strokeWidth={1}/>} title={"Focal Length"}
-                                         content={`${photos[slideGroup.current].exif.Photo?.FocalLength}mm`}/>
-                                    <Row icon={<ScanSearch size={20} strokeWidth={1}/>} title={"Subject Distance"}
-                                         content={`${photos[slideGroup.current].exif.Photo?.SubjectDistance !== undefined
-                                             ? photos[slideGroup.current].exif.Photo?.SubjectDistance! > 100000 ? 'MAX' :
-                                                 photos[slideGroup.current].exif.Photo?.SubjectDistance : ''}`}/>
-                                </div>}
+                                <Exif photo={photos[slideGroup.current]}/>}
                         </PopoverContent>
                     </Popover>
 

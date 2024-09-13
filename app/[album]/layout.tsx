@@ -34,6 +34,11 @@ type Props = {
 
 export const viewport: Viewport = {
     themeColor: '#3b3b3b',
+    // maximumScale: 1,
+    // width: 'device-width',
+    // initialScale: 1,
+    // userScalable: false,
+    // viewportFit: 'cover'
 }
 
 export async function generateMetadata(
