@@ -1,27 +1,13 @@
-import Link from "next/link";
 import {Metadata, Viewport} from "next";
 import {Albums} from "@/app/photos/album";
+import Header from "@/app/[album]/header";
+
 
 export default async function Layout({params, children}: { params: { album: string }, children: any }) {
     const selectedAlbum = params.album.toLowerCase();
-    const photos = await Albums()
     return (
         <main className="flex w-full flex-col items-center">
-            <header
-                className={"w-full sticky top-0 p-8 justify-between flex items-center z-10 mb-6"}>
-                <p className={"flex flex-col gap-1 font-bold cursor-pointer text-5xl max-md:text-4xl"}>
-                    <Link href={"/"} className={"fascinate"}>DAN<br/> LYU</Link>
-                </p>
-                <div className={"flex gap-8 max-md:gap-6"}>
-                    {Object.keys(photos).concat(["about"]).map((album) => (
-                        <Link key={album}
-                              href={`/${album}`}
-                              className={`max-sm:text-sm font-extrabold flex flex-col gap-2 ${album === selectedAlbum ? 'underline-offset-2 underline' : ''}`}>
-                            {album.toUpperCase()}
-                        </Link>
-                    ))}
-                </div>
-            </header>
+            <Header selectedAlbum={selectedAlbum}/>
             {children}
         </main>
     );

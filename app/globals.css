@@ -38,11 +38,11 @@ header p, span, button, a {
   transition: color 0.2s ease-in-out;
 }
 
-a {
+a, button {
   transition: color 0.2s ease-in-out;
 }
 
-a:hover {
+a:hover, button:hover {
   color: var(--color-pink);
 }
 
