@@ -87,7 +87,7 @@ function Exif({photo}: {photo: Photo}) {
     const cell = (values: (string | undefined)[]) => {
         return values.map((value, idx) => {
             return <p key={idx}
-                      className={`px-1 text-center flex-0 shrink-0 border-[#5f6264] ${idx === values.length - 1 ? '' : 'border-r'}`}
+                      className={`py-1 px-1 text-center flex-0 shrink-0 border-[#5f6264] ${idx === values.length - 1 ? '' : 'border-r'}`}
             >{value ? value : '-'}</p>
         })
     }
@@ -102,7 +102,7 @@ function Exif({photo}: {photo: Photo}) {
             <p>{photo.exif.Photo?.LensModel}{formatDatetime(photo.exif.Photo?.DateTimeOriginal)}</p>
             <p>{mp} MP · {photo.width} × {photo.height} · {formatSize(photo.size)}</p>
         </div>
-        <div className={"grid grid-cols-5 text-sm items-center justify-center w-full pt-2 pb-3 text-[#aeaeb3]"}>
+        <div className={"grid grid-cols-5 text-sm items-center justify-center w-full pt-1 pb-2 text-[#aeaeb3]"}>
             {cell([
                 `ISO ${photo.exif.Photo?.ISOSpeedRatings}`,
                 `${photo.exif.Photo?.FocalLength} mm`,
