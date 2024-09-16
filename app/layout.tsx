@@ -5,11 +5,14 @@ import RecoilRootWrapper from "@/app/RecoilRootWrapper";
 import Link from "next/link";
 import {Albums} from "@/app/photos/album";
 
-
 export async function generateMetadata(): Promise<Metadata> {
-    const photos = await Albums()
-    const totalPhotos = Object.values(photos).reduce((acc, album) => acc + album.photos.length, 0)
-    const description = `${totalPhotos} photos`
+    let description = ""
+    try {
+        const photos = await Albums()
+        const totalPhotos = Object.values(photos).reduce((acc, album) => acc + album.photos.length, 0)
+        description = `${totalPhotos} photos`
+    } catch (e) {
+    }
     return {
         title: `Home - Dan Lyu`,
         description,
