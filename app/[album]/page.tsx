@@ -342,7 +342,7 @@ export default function Page({params}: { params: { album: string } }) {
     }, [photos, selectedAlbum, router]);
     return (
 
-        <div className={"px-4 w-full flex justify-center"}>
+        <div className={"px-4 w-full flex justify-center max-sm:px-2"}>
             {selectedAlbum === "about" ? <div className="flex flex-col items-center justify-center text-white">
                     <section className={"flex flex-col gap-3 justify-center [&>*]:font-bold"}>
                         <Link href={"mailto:dan@lyu.sh"}>dan@lyu.sh</Link>
