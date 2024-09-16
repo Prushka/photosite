@@ -70,23 +70,21 @@ export default function Header({selectedAlbum}: { selectedAlbum: string }) {
                       className={`max-sm:text-sm font-extrabold ${"about" === selectedAlbum ? 'underline-offset-2 underline' : ''}`}>
                     ABOUT
                 </Link>
-                {
-                    selectedAlbum !== "about" &&
-                    <TooltipProvider delayDuration={0}>
-                        <Tooltip>
-                            <TooltipTrigger onClick={() => setZoomedOut(!zoomedOut)}>
-                                {
-                                    zoomedOut ?
-                                        <Maximize size={18} strokeWidth={3}/> :
-                                        <Minimize size={18} strokeWidth={3}/>
-                                }
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>{zoomedOut ? "Zoom in" : "Zoom out"}</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                }
+                <TooltipProvider delayDuration={0}>
+                    <Tooltip>
+                        <TooltipTrigger
+                            onClick={() => setZoomedOut(!zoomedOut)}>
+                            {
+                                zoomedOut ?
+                                    <Maximize size={18} strokeWidth={3}/> :
+                                    <Minimize size={18} strokeWidth={3}/>
+                            }
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>{zoomedOut ? "Zoom in" : "Zoom out"}</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </div>
         </header>
     )
