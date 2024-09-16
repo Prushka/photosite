@@ -1,5 +1,4 @@
 import {NextRequest, NextResponse} from "next/server";
-import {Albums} from "@/app/photos/album";
 
 export async function GET(request: NextRequest) {
 
@@ -10,14 +9,11 @@ export async function GET(request: NextRequest) {
         provider_url: "",
         provider_name: `Dan's Photo Gallery`
     }
+    let to =`${process.env.NEXT_PUBLIC_HOST!}`
     if (id) {
-        const to =`${process.env.NEXT_PUBLIC_HOST!}/${id}`
-        res.author_url = to
-        res.provider_url = to
-        const photos = await Albums()
-        const realId = Object.keys(photos).find((album) => album.toLowerCase() === id)
-        const photoCount = photos[id]?.photos?.length
-
+        to = `${process.env.NEXT_PUBLIC_HOST!}/${id}`
     }
+    res.author_url = to
+    res.provider_url = to
     return new NextResponse(JSON.stringify(res));
 }

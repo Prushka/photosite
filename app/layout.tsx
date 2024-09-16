@@ -3,27 +3,41 @@ import "./globals.css";
 import Loader from "@/app/loader";
 import RecoilRootWrapper from "@/app/RecoilRootWrapper";
 import Link from "next/link";
+import {Albums} from "@/app/photos/album";
 
-export const metadata: Metadata = {
-    title: `Home - Dan Lyu`,
-    description : '٩(˘◡˘)۶',
-    applicationName: "Photosite",
-    keywords: ["photography", "portfolio", "dan lyu", "gallery", "software engineer"],
-    creator: "Dan Lyu",
-    publisher: "Dan Lyu",
-    openGraph: {
+
+export async function generateMetadata(): Promise<Metadata> {
+    const photos = await Albums()
+    const totalPhotos = Object.values(photos).reduce((acc, album) => acc + album.photos.length, 0)
+    const description = `${totalPhotos} photos`
+    return {
         title: `Home - Dan Lyu`,
-        images: `${process.env.NEXT_PUBLIC_HOST!}/static/preview/cover.jpg`,
-        authors: ["Dan Lyu"],
-        creators: ["Dan Lyu"],
-        description: "٩(˘◡˘)۶",
-        siteName: "Dan's Photo Gallery",
-        url: `${process.env.NEXT_PUBLIC_HOST!}`
-    },
-    twitter: {
-        card: "summary_large_image"
+        description,
+        applicationName: "Photosite",
+        keywords: ["photography", "portfolio", "dan lyu", "gallery", "software engineer"],
+        creator: "Dan Lyu",
+        publisher: "Dan Lyu",
+        openGraph: {
+            title: `Home - Dan Lyu`,
+            images: `${process.env.NEXT_PUBLIC_HOST!}/static/preview/cover.jpg`,
+            authors: ["Dan Lyu"],
+            creators: ["Dan Lyu"],
+            description,
+            siteName: "Dan's Photo Gallery",
+            url: `${process.env.NEXT_PUBLIC_HOST!}`
+        },
+        icons: {
+            other: {
+                rel: 'alternate',
+                url: `${process.env.NEXT_PUBLIC_HOST!}/oembed`,
+                type: 'application/json+oembed'
+            },
+        },
+        twitter: {
+            card: "summary_large_image"
+        }
     }
-};
+}
 
 export const viewport: Viewport = {
     themeColor: '#3b3b3b',
