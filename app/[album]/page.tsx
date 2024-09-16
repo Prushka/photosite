@@ -294,9 +294,9 @@ function ImageSlider({photos, selected, open, setOpen}:
                         } else {
                             setControlHidden(false);
                             if (isTouchDevice()) {
-                                if (x < marginX + actualWidth / 2.2) {
+                                if (x < marginX + actualWidth / 2) {
                                     updateSelected(-1);
-                                } else if (x > marginX + (1.2 * actualWidth) / 2.2) {
+                                } else if (x > marginX + actualWidth / 2) {
                                     updateSelected(1);
                                 }
                             }
