@@ -51,7 +51,7 @@ preview and raw folders. For instance:
 
 This will **generate an album** called Toronto with its own navbar link.
 All images inside the Toronto folder will be displayed in the album.
-The **EXIF data** will be display in the corresponding photo view if it exists.
+The **EXIF data** will be displayed in the corresponding photo view if it exists.
 
 ![Toronto Album](assets/toronto.jpg)
 
@@ -68,5 +68,14 @@ To set a cover page for the root page, place a `cover.jpg` in the preview root f
 ### Photo View
 
 The photo view popup will initially display a preview image, followed by the full-resolution raw image once it has finished loading. 
-A fade in and out animation is applied to transition from the previous image to the next.
 
+A fade in and out animation is applied to transition from the previous image to the next one when user swipes.
+
+### AVIF/WebP Optimization
+
+By default, the project will NOT generate AVIF/WebP images due to the fact 
+that users may want to download the images and share them. 
+It's not ideal to share the image in AVIF format since Apps like Discord do not support AVIF images
+The project will use the original image format.
+
+Conversion to AVIF/WebP can be enabled by injecting a procedure to the startup scanning pipeline.
