@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Photosite
 
-## Getting Started
+---
 
-First, run the development server:
+A simple photo portfolio and gallery website that generates
+dynamic masonry layout and photo view from folders of images with
+almost no configuration needed.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Project is built with Next.js, Tailwind CSS, and the [sharp image library](https://github.com/lovell/sharp).
+
+
+## Features
+
+---
+
+* Exif data display
+* Mobile swipe gestures
+* Adaptive preview
+* Folder based album generation
+* Folder based navbar generation
+* Dynamic and responsive masonry layout
+* Fade in and out transition
+
+
+## Getting started
+
+---
+
+### Installation
+
+`docker-compose.yml`:
+
+```yaml
+services:
+  photosite:
+    image: meinya/photosite:latest
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - RAW=/raw
+      - PREVIEW=/preview
+    volumes:
+      - ./raw:/raw
+      - ./preview:/preview
 ```
+### Folder Structure
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Place your images in a separate album folder with any name inside 
+preview and raw folders. For instance:
+* `/raw/Toronto/IMG_1.jpg`
+* `/preview/Toronto/IMG_1.jpg`
+> Note that the same image should have the same name in both folders.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This will **generate an album** called Toronto with its own navbar link.
+All images inside the Toronto folder will be displayed in the album.
+The **EXIF data** will be display in the corresponding photo view if it exists.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+![Toronto Album](assets/Toronto.jpg)
 
-## Learn More
+![Toronto Album](assets/Bear.jpg)
 
-To learn more about Next.js, take a look at the following resources:
+To set a cover page for HTML embeds, place a `cover.jpg` in the preview album folder:
+`/preview/Toronto/cover.jpg`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+To set a cover page for the root page, place a `cover.jpg` in the preview root folder:
+`/preview/cover.jpg`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+![Toronto Album](assets/cover.jpg)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Photo View
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+In the photo view popup, the site will first display the preview image then the raw image once it's loaded.
+A fade in and out animation is applied to transition from the previous image to the next.
+
