@@ -221,7 +221,7 @@ function ImageSlider({photos, selected, open, setOpen}:
                             setPopOverOpen((prev) => !prev);
                         }}>
                             <Aperture
-                                className={`w-9 h-9 max-md:w-8 max-md:h-8 transition-colors text-gray-50 hover:text-gray-300 ${controlHidden ? 'pointer-events-none' : 'pointer-events-auto'}`}
+                                className={`w-11 h-11 p-1 max-md:w-10 max-md:h-10 transition-colors text-gray-50 hover:text-gray-300 ${controlHidden ? 'pointer-events-none' : 'pointer-events-auto'}`}
                                 strokeWidth={1}
                             />
                         </TooltipTrigger>
@@ -358,7 +358,7 @@ export default function Page({params}: { params: { album: string } }) {
                         <MasonryPhotos selectedAlbum={selectedAlbum} photos={photos} setSelectedPhoto={setSelectedPhoto}
                                        setOpen={setOpen} config={{
                             columns: [2, 3, 4],
-                            gap: [10, 12, 14],
+                            gap: [8, 12, 14],
                             media: [1000, 1400, 2500],
                         }}/> :
                         <MasonryPhotos selectedAlbum={selectedAlbum} photos={photos} setSelectedPhoto={setSelectedPhoto}
