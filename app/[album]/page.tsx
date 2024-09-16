@@ -190,9 +190,7 @@ function ImageSlider({photos, selected, open, setOpen}:
         let xDown: number | null = null;
         let yDown: number | null = null;
         const handleTouchStart = (e: TouchEvent) => {
-            if (e.touches.length > 1 ||
-                (window.visualViewport
-                    && window.visualViewport?.scale !== 1)) {
+            if (e.touches.length > 1) {
                 xDown = null;
                 yDown = null;
                 return;
@@ -201,9 +199,7 @@ function ImageSlider({photos, selected, open, setOpen}:
             yDown = e.touches[0].clientY;
         }
         const handleTouchEnd = (e: TouchEvent) => {
-            if (e.touches.length > 1 ||
-                (window.visualViewport
-                    && window.visualViewport?.scale !== 1)) {
+            if (e.touches.length > 1) {
                 xDown = null;
                 yDown = null;
                 return;
@@ -211,19 +207,9 @@ function ImageSlider({photos, selected, open, setOpen}:
             if (!xDown || !yDown) {
                 return;
             }
-            let xUp = e.changedTouches[0].clientX;
             let yUp = e.changedTouches[0].clientY;
-            let xDiff = xDown - xUp;
             let yDiff = yDown - yUp;
-            if (Math.abs(xDiff) > Math.abs(yDiff)) {
-                if (Math.abs(xDiff) > 45) {
-                    if (xDiff > 0) {
-                        updateSelected(1);
-                    } else {
-                        updateSelected(-1);
-                    }
-                }
-            } else if (yDiff < -45) {
+            if (yDiff < -45) {
                 setOpen(false)
             }
             xDown = null;
@@ -235,7 +221,7 @@ function ImageSlider({photos, selected, open, setOpen}:
             document.removeEventListener('touchstart', handleTouchStart);
             document.removeEventListener('touchend', handleTouchEnd);
         }
-    }, [setOpen, updateSelected]);
+    }, [setOpen]);
     useEffect(() => {
         const keyListener = (e: KeyboardEvent) => {
             if (e.key === 'ArrowLeft') {
@@ -336,6 +322,12 @@ function ImageSlider({photos, selected, open, setOpen}:
                                     setControlHidden(false);
                                 } else {
                                     setOpen(false);
+                                }
+                            } else if (isTouchDevice()) {
+                                if (x < marginX + actualWidth / 2.2) {
+                                    updateSelected(-1);
+                                } else if (x > marginX + (1.2 * actualWidth) / 2.2) {
+                                    updateSelected(1);
                                 }
                             }
                         }}
