@@ -15,6 +15,7 @@ import {
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import Link from "next/link";
 import {Photo} from "@/app/photos/album";
+import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
 
 function formatSize(size: number) {
     if (size < 1000) {
@@ -239,15 +240,8 @@ function ImageSlider({photos, selected, open, setOpen}:
         }
     }, [photos.length, selected, setOpen, updateSelected]);
     return open ? <div
-        className={"fixed top-0 left-0 w-full h-full bg-black bg-opacity-85 backdrop-blur z-50 " +
+        className={"fixed top-0 left-0 w-full h-full bg-black bg-opacity-85 backdrop-blur z-40 " +
             `${open ? '' : 'hidden'}`}
-        onClick={() => {
-            if (popOverOpen) {
-                setPopOverOpen(false);
-            } else if (controlHidden) {
-                setControlHidden(false);
-            }
-        }}
     >
         <div className={"relative h-full w-full flex items-center"}>
             <div
@@ -257,19 +251,26 @@ function ImageSlider({photos, selected, open, setOpen}:
                         className={`w-12 h-12 max-md:w-10 max-md:h-10 ${controlHidden ? 'pointer-events-none' : 'pointer-events-auto'}`}
                         strokeWidth={1} onClick={() => setOpen(false)}/>
                 </button>
+                <TooltipProvider delayDuration={0}>
+                    <Tooltip>
+                        <TooltipTrigger onClick={(e) => {
+                            setPopOverOpen((prev) => !prev);
+                        }}>
+                            <Aperture
+                                className={`w-9 h-9 max-md:w-8 max-md:h-8 transition-colors text-gray-50 hover:text-gray-300 ${controlHidden ? 'pointer-events-none' : 'pointer-events-auto'}`}
+                                strokeWidth={1}
+                            />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Get photo info</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
                 <Popover
                     open={popOverOpen}>
-                    <PopoverTrigger onClick={(e) => {
-                        e.stopPropagation()
-                        setPopOverOpen((prev) => !prev)
-                    }}>
-                        <Aperture
-                            className={`w-9 h-9 max-md:w-8 max-md:h-8 transition-colors text-gray-50 hover:text-gray-300 ${controlHidden ? 'pointer-events-none' : 'pointer-events-auto'}`}
-                            strokeWidth={1}
-                        />
-                    </PopoverTrigger>
+                    <PopoverTrigger></PopoverTrigger>
                     <PopoverContent
-                        className={"mt-4 mr-4 w-96 max-w-[92vw] bg-transparent p-0 border-none"}
+                        className={"mt-8 mr-4 w-96 max-w-[92vw] bg-transparent p-0 border-none"}
                         onClick={(e) => e.stopPropagation()}
                         align={"center"}>
                         {slideGroup.current !== undefined &&
@@ -316,10 +317,12 @@ function ImageSlider({photos, selected, open, setOpen}:
                         const y = event.clientY - rect.top;
                         const marginX = (rect.width - actualWidth) / 2;
                         const marginY = (rect.height - actualHeight) / 2;
+                        if (popOverOpen) {
+                            setPopOverOpen(false);
+                            return;
+                        }
                         if (x < marginX || x > rect.width - marginX || y < marginY || y > rect.height - marginY) {
-                            if (popOverOpen) {
-                                setPopOverOpen(false);
-                            } else if (controlHidden) {
+                            if (controlHidden) {
                                 setControlHidden(false);
                             } else {
                                 setOpen(false);
