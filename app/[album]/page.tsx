@@ -291,11 +291,14 @@ function ImageSlider({photos, selected, open, setOpen}:
                             } else {
                                 setOpen(false);
                             }
-                        } else if (isTouchDevice()) {
-                            if (x < marginX + actualWidth / 2.2) {
-                                updateSelected(-1);
-                            } else if (x > marginX + (1.2 * actualWidth) / 2.2) {
-                                updateSelected(1);
+                        } else {
+                            setControlHidden(false);
+                            if (isTouchDevice()) {
+                                if (x < marginX + actualWidth / 2.2) {
+                                    updateSelected(-1);
+                                } else if (x > marginX + (1.2 * actualWidth) / 2.2) {
+                                    updateSelected(1);
+                                }
                             }
                         }
                     }}
