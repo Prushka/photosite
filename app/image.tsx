@@ -11,7 +11,6 @@ interface ImageProps {
     onAnimationEnd?: (e: React.AnimationEvent<HTMLImageElement>) => void;
     onTransitionEnd?: (e: React.TransitionEvent<HTMLImageElement>) => void;
     isCurrent?: boolean;
-    scale?: number;
 }
 
 export const PreviewImage: React.FC<ImageProps> = ({
@@ -48,8 +47,7 @@ export const RawImage: React.FC<ImageProps> = ({
                                                    onClick,
                                                    onAnimationEnd,
                                                    onTransitionEnd,
-                                                   isCurrent,
-    scale = 2
+                                                   isCurrent
                                                }) => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [previewAnimatedIn, setPreviewAnimatedIn] = useState(false);
@@ -107,4 +105,28 @@ export const RawImage: React.FC<ImageProps> = ({
                 unoptimized
             />
     );
+};
+
+
+export const DumbImage: React.FC<ImageProps> = ({
+                                                   photo, className, loading,
+                                                   onClick,
+                                                   onAnimationEnd,
+                                                   onTransitionEnd
+                                               }) => {
+
+    return photo ? <Image
+            decoding={'async'}
+            draggable={false}
+            src={`${window.location.origin}/static/preview/${photo.path}`}
+            alt={photo.path}
+            onClick={onClick}
+            width={photo.width}
+            height={photo.height}
+            loading={loading}
+            onAnimationEnd={onAnimationEnd}
+            onTransitionEnd={onTransitionEnd}
+            className={`hidden ${className}`}
+            unoptimized
+        /> : <></>;
 };

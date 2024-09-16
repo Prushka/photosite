@@ -1,7 +1,7 @@
 'use client'
 
 import {useCallback, useEffect, useMemo, useState} from "react";
-import {PreviewImage, RawImage} from "@/app/image";
+import {DumbImage, PreviewImage, RawImage} from "@/app/image";
 import {useRouter} from "next/navigation";
 import {Masonry} from "react-plock";
 import {useRecoilState} from "recoil";
@@ -342,6 +342,12 @@ function ImageSlider({photos, selected, open, setOpen}:
                             })}
                             photo={photos[slideGroup.previous]}/>
                     }
+                    <DumbImage
+                        loading={"eager"}
+                        photo={photos[slideGroup.current+1]}/>
+                    <DumbImage
+                        loading={"eager"}
+                        photo={photos[slideGroup.current-1]}/>
                 </>
                 }
             </div>
