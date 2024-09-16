@@ -189,42 +189,6 @@ function ImageSlider({photos, selected, open, setOpen}:
     }, [photos]);
 
     useEffect(() => {
-        let xDown: number | null = null;
-        let yDown: number | null = null;
-        const handleTouchStart = (e: TouchEvent) => {
-            if (e.touches.length > 1) {
-                xDown = null;
-                yDown = null;
-                return;
-            }
-            xDown = e.touches[0].clientX;
-            yDown = e.touches[0].clientY;
-        }
-        const handleTouchEnd = (e: TouchEvent) => {
-            if (e.touches.length > 1) {
-                xDown = null;
-                yDown = null;
-                return;
-            }
-            if (!xDown || !yDown) {
-                return;
-            }
-            let yUp = e.changedTouches[0].clientY;
-            let yDiff = yDown - yUp;
-            if (yDiff < -45) {
-                setOpen(false)
-            }
-            xDown = null;
-            yDown = null;
-        }
-        document.addEventListener('touchstart', handleTouchStart, false);
-        document.addEventListener('touchend', handleTouchEnd, false);
-        return () => {
-            document.removeEventListener('touchstart', handleTouchStart);
-            document.removeEventListener('touchend', handleTouchEnd);
-        }
-    }, [setOpen]);
-    useEffect(() => {
         const keyListener = (e: KeyboardEvent) => {
             if (e.key === 'ArrowLeft') {
                 updateSelected(-1);
@@ -253,7 +217,7 @@ function ImageSlider({photos, selected, open, setOpen}:
                 </button>
                 <TooltipProvider delayDuration={0}>
                     <Tooltip>
-                        <TooltipTrigger onClick={(e) => {
+                        <TooltipTrigger onClick={() => {
                             setPopOverOpen((prev) => !prev);
                         }}>
                             <Aperture
