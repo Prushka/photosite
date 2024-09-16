@@ -1,11 +1,11 @@
-## Photosite
+# Photosite
 
 
 A simple photo portfolio and gallery website that generates
 dynamic masonry layout and photo view from folders of images with
 almost no configuration needed.
 
-Project is built with Next.js, Tailwind CSS, and the [sharp image library](https://github.com/lovell/sharp).
+Project is built with Next.js, Tailwind CSS, and the [sharp image library](https://github.com/lovell/sharp) in 2 days.
 
 
 ## Features
@@ -67,6 +67,6 @@ To set a cover page for the root page, place a `cover.jpg` in the preview root f
 
 ### Photo View
 
-In the photo view popup, the site will first display the preview image then the raw image once it's loaded.
+The photo view popup will initially display a preview image, followed by the full-resolution raw image once it has finished loading. 
 A fade in and out animation is applied to transition from the previous image to the next.
 
