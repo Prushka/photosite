@@ -75,7 +75,7 @@ A fade in and out animation is applied to transition from the previous image to 
 
 By default, the project will NOT generate AVIF/WebP images due to the fact 
 that users may want to download the images and share them. 
-It's not ideal to share the image in AVIF format since Apps like Discord do not support AVIF images
+It's not ideal to share the image in AVIF format since Apps like Discord do not support AVIF.
 The project will use the original image format.
 
 Conversion to AVIF/WebP can be enabled by injecting a procedure to the startup scanning pipeline.
