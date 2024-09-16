@@ -8,6 +8,8 @@ FROM node:lts AS builder
 WORKDIR /app
 COPY ./ .
 COPY ./.env .
+RUN rm .env.local
+
 COPY --from=dependencies /app/node_modules ./node_modules
 RUN yarn run build
 FROM node:lts AS runner

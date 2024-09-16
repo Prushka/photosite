@@ -33,7 +33,7 @@ export async function generateMetadata(
     const id = params.album.toLowerCase()
     const idDisplay = uppercaseFirst(id)
     const photos = await Albums()
-    const realId = Object.keys(photos).find((album) => album.toLowerCase() === id)
+    const realId = Object.values(photos).find((album) => album.name.toLowerCase() === id)?.name
     const photoCount = photos[id]?.photos?.length
     const totalPhotos = Object.values(photos).reduce((acc, album) => acc + album.photos.length, 0)
     const description = photoCount && totalPhotos ? `${photoCount}/${totalPhotos} photos in ${idDisplay}` : ''
