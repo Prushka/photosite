@@ -136,7 +136,7 @@ function ImageSlider({photos, selected, open, setOpen}:
             if (!popOverOpen) {
                 setControlHidden(true);
             }
-        }, 2000);
+        }, isTouchDevice() ? 4000 : 2000);
         const mouseMove = () => {
             setControlHidden(false);
             clearTimeout(timer);
@@ -144,7 +144,7 @@ function ImageSlider({photos, selected, open, setOpen}:
                 if (!popOverOpen) {
                     setControlHidden(true);
                 }
-            }, 2000);
+            }, isTouchDevice() ? 4000 : 2000);
         }
         document.addEventListener('mousemove', mouseMove);
         // document.addEventListener('wheel', event => {
