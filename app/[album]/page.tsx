@@ -5,7 +5,7 @@ import {DumbImage, PreviewImage, RawImage} from "@/app/image";
 import {useRouter} from "next/navigation";
 import {Masonry} from "react-plock";
 import {useRecoilState} from "recoil";
-import {albumsState} from "@/app/loader";
+import {albumsState, zoomedOutState} from "@/app/loader";
 import {
     Aperture,
     ChevronLeft,
@@ -39,7 +39,7 @@ function exposureTimeToFraction(time?: number) {
     return fraction + ' s';
 }
 
-const photoType : {[key:string]: string} = {
+const photoType: { [key: string]: string } = {
     "jpg": "JPEG",
     "jpeg": "JPEG",
     "avif": "AVIF",
@@ -49,7 +49,7 @@ const photoType : {[key:string]: string} = {
 }
 
 function getPhotoType(path: string | undefined) {
-    const ext : string | undefined = path?.split('.').pop()
+    const ext: string | undefined = path?.split('.').pop()
     if (!ext) {
         return undefined;
     }
@@ -79,7 +79,7 @@ function formatDatetime(date?: Date) {
     return ` · ${new Date(date).toISOString().split('T')[0]}`;
 }
 
-function Exif({photo}: {photo: Photo}) {
+function Exif({photo}: { photo: Photo }) {
     const [mp] = useMemo(() => {
         const mp = (photo.width * photo.height / 1000000).toFixed(0);
         return [mp]
@@ -91,7 +91,8 @@ function Exif({photo}: {photo: Photo}) {
             >{value ? value : '-'}</p>
         })
     }
-    return <div className={"drop-shadow-2xl tracking-normal items-center justify-center flex flex-col gap-1 rounded-md bg-[#222222] [&>*]:border-[#5f6264] border border-[#5f6264]"}>
+    return <div
+        className={"drop-shadow-2xl tracking-normal items-center justify-center flex flex-col gap-1 rounded-md bg-[#222222] [&>*]:border-[#5f6264] border border-[#5f6264]"}>
         <div className={"flex w-full items-center justify-between gap-1 bg-[#323232] rounded-t-md p-3 border-b"}>
             <p className={"text-white"}>{photo.exif.Image?.Model}</p>
             {getPhotoType(photo.path) && <p className={"bg-[#565656] text-white px-1 text-sm rounded-sm"}>
@@ -169,7 +170,7 @@ function ImageSlider({photos, selected, open, setOpen}:
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'auto';
-            if(slideGroup.current !== undefined && slideGroup.current !== selected) {
+            if (slideGroup.current !== undefined && slideGroup.current !== selected) {
                 document.getElementById(`${slideGroup.current}`)?.scrollIntoView();
             }
         }
@@ -248,109 +249,109 @@ function ImageSlider({photos, selected, open, setOpen}:
             }
         }}
     >
-            <div className={"relative h-full w-full flex items-center"}>
-                <div
-                    className={`pointer-events-none flex flex-row-reverse gap-3 max-md:gap-1 items-center p-2 w-full absolute top-0 right-0 z-20 transition-opacity duration-300 ${controlHidden ? 'opacity-0' : 'opacity-100'}`}>
-                    <button className={"text-gray-50 p-2 hover:text-gray-300"}>
-                        <X
-                            className={`w-12 h-12 max-md:w-10 max-md:h-10 ${controlHidden ? 'pointer-events-none' : 'pointer-events-auto'}`}
-                            strokeWidth={1} onClick={() => setOpen(false)}/>
-                    </button>
-                    <Popover
-                        open={popOverOpen}>
-                        <PopoverTrigger onClick={(e) => {
-                            e.stopPropagation()
-                            setPopOverOpen((prev) => !prev)
-                        }}>
-                            <Aperture
-                                className={`w-9 h-9 max-md:w-8 max-md:h-8 transition-colors text-gray-50 hover:text-gray-300 ${controlHidden ? 'pointer-events-none' : 'pointer-events-auto'}`}
-                                strokeWidth={1}
-                            />
-                        </PopoverTrigger>
-                        <PopoverContent
-                            className={"mt-4 mr-4 w-96 max-w-[92vw] bg-transparent p-0 border-none"}
-                            onClick={(e) => e.stopPropagation()}
-                            align={"center"}>
-                            {slideGroup.current !== undefined &&
-                                <Exif photo={photos[slideGroup.current]}/>}
-                        </PopoverContent>
-                    </Popover>
+        <div className={"relative h-full w-full flex items-center"}>
+            <div
+                className={`pointer-events-none flex flex-row-reverse gap-3 max-md:gap-1 items-center p-2 w-full absolute top-0 right-0 z-20 transition-opacity duration-300 ${controlHidden ? 'opacity-0' : 'opacity-100'}`}>
+                <button className={"text-gray-50 p-2 hover:text-gray-300"}>
+                    <X
+                        className={`w-12 h-12 max-md:w-10 max-md:h-10 ${controlHidden ? 'pointer-events-none' : 'pointer-events-auto'}`}
+                        strokeWidth={1} onClick={() => setOpen(false)}/>
+                </button>
+                <Popover
+                    open={popOverOpen}>
+                    <PopoverTrigger onClick={(e) => {
+                        e.stopPropagation()
+                        setPopOverOpen((prev) => !prev)
+                    }}>
+                        <Aperture
+                            className={`w-9 h-9 max-md:w-8 max-md:h-8 transition-colors text-gray-50 hover:text-gray-300 ${controlHidden ? 'pointer-events-none' : 'pointer-events-auto'}`}
+                            strokeWidth={1}
+                        />
+                    </PopoverTrigger>
+                    <PopoverContent
+                        className={"mt-4 mr-4 w-96 max-w-[92vw] bg-transparent p-0 border-none"}
+                        onClick={(e) => e.stopPropagation()}
+                        align={"center"}>
+                        {slideGroup.current !== undefined &&
+                            <Exif photo={photos[slideGroup.current]}/>}
+                    </PopoverContent>
+                </Popover>
 
-                </div>
-                <div
-                    className={`pointer-events-none flex justify-between w-full absolute z-20 transition-opacity duration-300 ${controlHidden ? 'opacity-0' : 'opacity-100'} ${isTouchDevice() ? 'hidden' : ''}`}>
-                    <button onClick={(e: any) => {
-                        updateSelected(-1);
-                        e.stopPropagation();
-                    }}
-                            className={`text-gray-50 p-1.5 max-md:p-0.5 hover:text-gray-300 ${slideGroup.current === 0 ? 'opacity-0 !pointer-events-none' : ''} ${controlHidden ? 'pointer-events-none' : 'pointer-events-auto'}`}>
-                        <ChevronLeft
-                            className={"w-16 h-16 max-md:w-12 max-md:h-12"} strokeWidth={1}/>
-                    </button>
-
-                    <button onClick={(e: any) => {
-                        updateSelected(1);
-                        e.stopPropagation();
-                    }}
-                            className={`text-gray-50 p-1.5 max-md:p-0.5 hover:text-gray-300 ${slideGroup.current === photos.length - 1 ? 'opacity-0 !pointer-events-none' : ''} ${controlHidden ? 'pointer-events-none' : 'pointer-events-auto'}`}>
-                        <ChevronRight className={"w-16 h-16 max-md:w-12 max-md:h-12"} strokeWidth={1}/>
-                    </button>
-                </div>
-                {slideGroup.current !== undefined && <>
-                    <RawImage
-                        key={photos[slideGroup.current].path}
-                        isCurrent
-                        className={"absolute object-contain h-full w-full z-0"}
-                        loading={"eager"}
-                        onClick={(event) => {
-                            const image = event.currentTarget;
-                            const rect = image.getBoundingClientRect();
-                            let actualWidth = image.naturalWidth * (rect.height / image.naturalHeight);
-                            let actualHeight = rect.height;
-                            if (actualWidth > rect.width) {
-                                actualHeight = image.naturalHeight * (rect.width / image.naturalWidth);
-                                actualWidth = rect.width;
-                            }
-                            const x = event.clientX - rect.left;
-                            const y = event.clientY - rect.top;
-                            const marginX = (rect.width - actualWidth) / 2;
-                            const marginY = (rect.height - actualHeight) / 2;
-                            if (x < marginX || x > rect.width - marginX || y < marginY || y > rect.height - marginY) {
-                                if (popOverOpen) {
-                                    setPopOverOpen(false);
-                                } else if (controlHidden) {
-                                    setControlHidden(false);
-                                } else {
-                                    setOpen(false);
-                                }
-                            } else if (isTouchDevice()) {
-                                if (x < marginX + actualWidth / 2.2) {
-                                    updateSelected(-1);
-                                } else if (x > marginX + (1.2 * actualWidth) / 2.2) {
-                                    updateSelected(1);
-                                }
-                            }
-                        }}
-                        photo={photos[slideGroup.current]}/>
-                    {slideGroup.previous !== undefined &&
-                        <RawImage
-                            key={photos[slideGroup.previous].path}
-                            className={"absolute object-contain h-full w-full z-10 opacity-0"}
-                            loading={"eager"}
-                            onAnimationEnd={() => setSlideGroup((prev) => {
-                                return {current: prev.current, previous: undefined}
-                            })}
-                            photo={photos[slideGroup.previous]}/>
-                    }
-                    <DumbImage
-                        loading={"eager"}
-                        photo={photos[slideGroup.current+1]}/>
-                    <DumbImage
-                        loading={"eager"}
-                        photo={photos[slideGroup.current-1]}/>
-                </>
-                }
             </div>
+            <div
+                className={`pointer-events-none flex justify-between w-full absolute z-20 transition-opacity duration-300 ${controlHidden ? 'opacity-0' : 'opacity-100'} ${isTouchDevice() ? 'hidden' : ''}`}>
+                <button onClick={(e: any) => {
+                    updateSelected(-1);
+                    e.stopPropagation();
+                }}
+                        className={`text-gray-50 p-1.5 max-md:p-0.5 hover:text-gray-300 ${slideGroup.current === 0 ? 'opacity-0 !pointer-events-none' : ''} ${controlHidden ? 'pointer-events-none' : 'pointer-events-auto'}`}>
+                    <ChevronLeft
+                        className={"w-16 h-16 max-md:w-12 max-md:h-12"} strokeWidth={1}/>
+                </button>
+
+                <button onClick={(e: any) => {
+                    updateSelected(1);
+                    e.stopPropagation();
+                }}
+                        className={`text-gray-50 p-1.5 max-md:p-0.5 hover:text-gray-300 ${slideGroup.current === photos.length - 1 ? 'opacity-0 !pointer-events-none' : ''} ${controlHidden ? 'pointer-events-none' : 'pointer-events-auto'}`}>
+                    <ChevronRight className={"w-16 h-16 max-md:w-12 max-md:h-12"} strokeWidth={1}/>
+                </button>
+            </div>
+            {slideGroup.current !== undefined && <>
+                <RawImage
+                    key={photos[slideGroup.current].path}
+                    isCurrent
+                    className={"absolute object-contain h-full w-full z-0"}
+                    loading={"eager"}
+                    onClick={(event) => {
+                        const image = event.currentTarget;
+                        const rect = image.getBoundingClientRect();
+                        let actualWidth = image.naturalWidth * (rect.height / image.naturalHeight);
+                        let actualHeight = rect.height;
+                        if (actualWidth > rect.width) {
+                            actualHeight = image.naturalHeight * (rect.width / image.naturalWidth);
+                            actualWidth = rect.width;
+                        }
+                        const x = event.clientX - rect.left;
+                        const y = event.clientY - rect.top;
+                        const marginX = (rect.width - actualWidth) / 2;
+                        const marginY = (rect.height - actualHeight) / 2;
+                        if (x < marginX || x > rect.width - marginX || y < marginY || y > rect.height - marginY) {
+                            if (popOverOpen) {
+                                setPopOverOpen(false);
+                            } else if (controlHidden) {
+                                setControlHidden(false);
+                            } else {
+                                setOpen(false);
+                            }
+                        } else if (isTouchDevice()) {
+                            if (x < marginX + actualWidth / 2.2) {
+                                updateSelected(-1);
+                            } else if (x > marginX + (1.2 * actualWidth) / 2.2) {
+                                updateSelected(1);
+                            }
+                        }
+                    }}
+                    photo={photos[slideGroup.current]}/>
+                {slideGroup.previous !== undefined &&
+                    <RawImage
+                        key={photos[slideGroup.previous].path}
+                        className={"absolute object-contain h-full w-full z-10 opacity-0"}
+                        loading={"eager"}
+                        onAnimationEnd={() => setSlideGroup((prev) => {
+                            return {current: prev.current, previous: undefined}
+                        })}
+                        photo={photos[slideGroup.previous]}/>
+                }
+                <DumbImage
+                    loading={"eager"}
+                    photo={photos[slideGroup.current + 1]}/>
+                <DumbImage
+                    loading={"eager"}
+                    photo={photos[slideGroup.current - 1]}/>
+            </>
+            }
+        </div>
     </div> : <></>
 }
 
@@ -360,6 +361,7 @@ export default function Page({params}: { params: { album: string } }) {
     const [selectedPhoto, setSelectedPhoto] = useState<number>(0);
     const [photos] = useRecoilState(albumsState);
     const router = useRouter();
+    const [zoomedOut] = useRecoilState(zoomedOutState);
     useEffect(() => {
         if (selectedAlbum !== 'about') {
             if (photos && Object.keys(photos).length > 0 && !photos[selectedAlbum]) {
@@ -382,29 +384,52 @@ export default function Page({params}: { params: { album: string } }) {
                 <>
                     <ImageSlider photos={photos[selectedAlbum]?.photos} selected={selectedPhoto}
                                  open={open} setOpen={setOpen}/>
-                    <Masonry
-                        items={photos[selectedAlbum]?.photos}
-                        config={{
-                            columns: [1, 2, 3],
-                            gap: [18, 18, 18],
+                    {zoomedOut ?
+                        <MasonryPhotos selectedAlbum={selectedAlbum} photos={photos} setSelectedPhoto={setSelectedPhoto}
+                                       setOpen={setOpen} config={{
+                            columns: [2, 3, 4],
+                            gap: [10, 12, 14],
                             media: [1000, 1400, 2500],
-                        }}
-                        render={(data) => {
-                            return <div
-                                id={`${data.idx}`}
-                                key={data.path} className={"cursor-pointer relative image-container"}
-                                onClick={() => {
-                                    setSelectedPhoto(data.idx);
-                                    setOpen(true)
-                                }}
-                            >
-                                <PreviewImage
-                                    loading={"lazy"}
-                                    photo={data}/>
-                            </div>
-                        }}
-                    /></>
+                        }}/> :
+                        <MasonryPhotos selectedAlbum={selectedAlbum} photos={photos} setSelectedPhoto={setSelectedPhoto}
+                                       setOpen={setOpen} config={{
+                            columns: [1, 2, 3],
+                            gap: [12, 18, 18],
+                            media: [1000, 1400, 2500],
+                        }}/>}
+                </>
             }
         </div>
     );
+}
+
+
+function MasonryPhotos({selectedAlbum, photos, setSelectedPhoto, setOpen, config}:
+                           {
+                               selectedAlbum: string, photos: { [key: string]: { name: string, photos: Photo[] } },
+                               setSelectedPhoto: (idx: number) => void, setOpen: (open: boolean) => void, config: {
+                                   columns: number | number[];
+                                   gap: number | number[];
+                                   media?: number[];
+                               }
+                           }) {
+    return <Masonry
+        items={photos[selectedAlbum]?.photos}
+        config={config}
+        key={JSON.stringify(config)}
+        render={(data) => {
+            return <div
+                id={`${data.idx}`}
+                key={data.path} className={"cursor-pointer relative image-container"}
+                onClick={() => {
+                    setSelectedPhoto(data.idx);
+                    setOpen(true)
+                }}
+            >
+                <PreviewImage
+                    loading={"lazy"}
+                    photo={data}/>
+            </div>
+        }}
+    />
 }

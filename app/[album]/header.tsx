@@ -3,16 +3,17 @@
 import {Drawer, DrawerContent} from "@/components/ui/drawer";
 import {useState} from "react";
 import Link from "next/link";
-import {ChevronsUpDown} from "lucide-react";
-import {albumsState} from "@/app/loader";
+import {ChevronsUpDown, Maximize, Minimize} from "lucide-react";
+import {albumsState, zoomedOutState} from "@/app/loader";
 import {useRecoilState} from "recoil";
 
 export default function Header({selectedAlbum} : {selectedAlbum: string}) {
     const [open, setOpen] = useState(false)
     const [photos] = useRecoilState(albumsState);
+    const [zoomedOut, setZoomedOut] = useRecoilState(zoomedOutState);
     return (
         <header
-            className={"w-full sticky top-0 p-8 justify-between flex items-center z-10 mb-6"}>
+            className={"w-full sticky top-0 p-8 max-sm:px-6 justify-between flex items-center z-10 mb-6"}>
             <Drawer
                 open={open}
                     onOpenChange={setOpen}
@@ -62,6 +63,15 @@ export default function Header({selectedAlbum} : {selectedAlbum: string}) {
                       className={`max-sm:text-sm font-extrabold ${"about" === selectedAlbum ? 'underline-offset-2 underline' : ''}`}>
                     ABOUT
                 </Link>
+                <button
+                onClick={() => setZoomedOut(!zoomedOut)}
+                >
+                    {
+                        zoomedOut ?
+                            <Maximize size={18} strokeWidth={3}/> :
+                            <Minimize size={18} strokeWidth={3}/>
+                    }
+                </button>
             </div>
         </header>
 )

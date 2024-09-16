@@ -11,6 +11,12 @@ export const albumsState: RecoilState<{ [key: string]: Album }> =
         default: {},
     });
 
+export const zoomedOutState: RecoilState<boolean> =
+    atom({
+        key: 'zoomedOut',
+        default: false,
+    });
+
 export default function Loader () {
     const [, setAlbums] = useRecoilState(albumsState);
     useEffect(() => {
