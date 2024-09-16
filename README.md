@@ -5,7 +5,7 @@ A simple photo portfolio and gallery website that generates
 dynamic masonry layout and photo view from folders of images with
 almost no configuration needed.
 
-Project is built with Next.js, Tailwind CSS, and the [sharp image library](https://github.com/lovell/sharp) in 2 days.
+The project was developed in two days using Next.js, Tailwind CSS, and the [sharp image library](https://github.com/lovell/sharp).
 
 
 ## Features
