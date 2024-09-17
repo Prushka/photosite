@@ -38,6 +38,7 @@ export interface Album {
 const acceptable = ['jpg', 'jpeg', 'avif', 'webp', 'png', 'gif']
 
 const getAlbums = async () => {
+    console.log('scanning albums')
     const albums: { [key: string]: Album } = {}
     const root = process.env.RAW!
     const previewRoot = process.env.PREVIEW!

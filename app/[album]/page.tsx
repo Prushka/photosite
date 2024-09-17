@@ -358,7 +358,7 @@ export default function Page({params}: { params: { album: string } }) {
                         <MasonryPhotos selectedAlbum={selectedAlbum} photos={photos} setSelectedPhoto={setSelectedPhoto}
                                        setOpen={setOpen} config={{
                             columns: [2, 3, 4],
-                            gap: [8, 12, 14],
+                            gap: [8, 12, 12],
                             media: [1000, 1400, 2500],
                         }}/> :
                         <MasonryPhotos selectedAlbum={selectedAlbum} photos={photos} setSelectedPhoto={setSelectedPhoto}
