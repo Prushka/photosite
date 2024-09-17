@@ -1,6 +1,8 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Image from "next/image";
 import {Photo} from "@/app/photos/album";
+import {HashLoader} from "react-spinners";
+import Toolover from "@/components/ui/toolover";
 
 interface ImageProps {
     photo: Photo;
@@ -51,13 +53,26 @@ export const RawImage: React.FC<ImageProps> = ({
                                                }) => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [previewAnimatedIn, setPreviewAnimatedIn] = useState(false);
+    const [showLoading, setShowLoading] = useState(false);
 
     const handleImageLoad = () => {
         setIsLoaded(true);
     };
 
+    useEffect(() => {
+        if (isLoaded) {
+            setShowLoading(false);
+        }
+        const timeout = setTimeout(() => {
+            setShowLoading(()=>{
+                return !isLoaded;
+            });
+        }, 1000);
+        return () => clearTimeout(timeout);
+    }, [isLoaded]);
+
     return (
-        isCurrent ? <> <Image
+        isCurrent ? <div className={"relative w-full h-full"}> <Image
                 decoding={'async'}
                 draggable={false}
                 src={`${window.location.origin}/static/raw/${photo.path}`}
@@ -90,10 +105,16 @@ export const RawImage: React.FC<ImageProps> = ({
                         className={`${className} animate-fadeIn`}
                         unoptimized
                     />}
-        </> : <Image
-                decoding={'async'}
-                draggable={false}
-                src={`${window.location.origin}/static/preview/${photo.path}`}
+            {showLoading &&
+                <div className={"absolute bottom-6 right-6 text-white"}>
+                    <Toolover content={"Loading full resolution photo"}>
+                        <HashLoader size={24} color={"#ffffff"}/>
+                    </Toolover>
+                </div>}
+        </div> : <Image
+            decoding={'async'}
+            draggable={false}
+            src={`${window.location.origin}/static/preview/${photo.path}`}
                 alt={photo.path}
                 onClick={onClick}
                 width={photo.width}
